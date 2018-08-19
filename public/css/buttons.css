@@ -1,0 +1,32 @@
+.icon-button {
+  height: 16px;
+  width: 16px;
+  padding: 8px;
+  border: none;
+  outline: 0;
+}
+.arrow-left {
+  background: url('/images/arrow-left.svg') no-repeat center center;
+}
+
+.arrow-left__active {
+  background: url('/images/arrow-left__active.svg') no-repeat center center;
+  cursor: pointer;
+}
+
+.arrow-right {
+  background: url('/images/arrow-left.svg') no-repeat center center;
+  transform: scale(-1, 1);
+}
+
+.arrow-right__active {
+  background: url('/images/arrow-left__active.svg') no-repeat center center;
+  cursor: pointer;
+}
+
+@media (max-width: 710px) {
+  .icon-button {
+    display: none;
+  }
+}
+

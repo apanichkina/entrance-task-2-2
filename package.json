@@ -1,0 +1,37 @@
+{
+  "name": "shri-2018-2-task-2",
+  "version": "1.0.0",
+  "description": "entrance-task-2-2",
+  "main": "index.js",
+  "repository": "https://github.com/apanichkina/entrance-task-2-2.git",
+  "author": "Anna Panichkina <annjellyiu5@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "webpack-dev-server",
+    "build": "fest-build --dir=public",
+    "beauty": "webpack --mode production",
+    "watch": "webpack --watch"
+  },
+  "dependencies": {
+    "fest": "^0.12.1",
+    "webpack": "^4.16.4",
+    "webpack-cli": "^3.1.0",
+    "webpack-dev-server": "^3.1.5"
+  },
+  "devDependencies": {
+    "clean-webpack-plugin": "^0.1.19",
+    "css-hot-loader": "^1.4.2",
+    "css-loader": "^1.0.0",
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^13.0.0",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-promise": "^4.0.0",
+    "eslint-plugin-standard": "^3.1.0",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "fest-webpack-loader": "^1.1.1",
+    "file-loader": "^1.1.11",
+    "postcss-loader": "^3.0.0",
+    "style-loader": "^0.22.1"
+  }
+}

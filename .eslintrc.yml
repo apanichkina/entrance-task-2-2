@@ -1,0 +1,8 @@
+extends: airbnb-base
+#parser: babel-eslint
+rules:
+  no-plusplus: ["error", { "allowForLoopAfterthoughts": true }]
+  newline-before-return: "error"
+env:
+  browser: true
+  node: true

@@ -1,0 +1,11 @@
+<fest:template xmlns:fest="http://fest.mail.ru">
+    <fest:set name="card">
+        <div class="card">
+            <img src="params.img"></img>
+            <div class="card__title"><fest:value>params.name</fest:value></div>
+            <fest:if test="params.subtitle">
+                <div class="subtitle"><fest:value>params.subtitle</fest:value></div>
+            </fest:if>
+        </div>
+    </fest:set>
+</fest:template>
