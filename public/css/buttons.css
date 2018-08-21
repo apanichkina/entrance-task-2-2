@@ -1,27 +1,54 @@
 .icon-button {
   height: 16px;
   width: 16px;
-  padding: 8px;
+  /*padding: 8px;*/
   border: none;
   outline: 0;
 }
+
+.icon-button + .icon-button {
+  margin-left: 15px;
+}
+
+.arrow__container {
+  display: inline-flex;
+}
+
 .arrow-left {
-  background: url('/images/arrow-left.svg') no-repeat center center;
+  background: url('/images_transparent/arrow-left.svg') no-repeat center center;
 }
 
 .arrow-left__active {
-  background: url('/images/arrow-left__active.svg') no-repeat center center;
+  background: url('/images_transparent/arrow-left__active.svg') no-repeat center center;
   cursor: pointer;
 }
 
 .arrow-right {
-  background: url('/images/arrow-left.svg') no-repeat center center;
+  background: url('/images_transparent/arrow-left.svg') no-repeat center center;
   transform: scale(-1, 1);
 }
 
 .arrow-right__active {
-  background: url('/images/arrow-left__active.svg') no-repeat center center;
+  background: url('/images_transparent/arrow-left__active.svg') no-repeat center center;
   cursor: pointer;
+}
+
+.radio-toolbar input[type="radio"] {
+  display: none;
+}
+
+.radio-toolbar label {
+  display: inline-block;
+  background-color: #F7F7F7;
+  border-radius: 20px;
+  padding: 7px 15px 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  margin-right: 10px
+}
+
+.radio-toolbar input[type="radio"]:checked+label {
+  background-color: #FFD93E;
 }
 
 @media (max-width: 710px) {

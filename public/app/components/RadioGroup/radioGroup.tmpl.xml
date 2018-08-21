@@ -1,0 +1,6 @@
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="params">
+  <fest:include src="../Radio/radio.tmpl.xml"/>
+  <fest:for iterate="params" index="i" value="btn">
+    <fest:get name="radio">btn</fest:get>
+  </fest:for>
+</fest:template>

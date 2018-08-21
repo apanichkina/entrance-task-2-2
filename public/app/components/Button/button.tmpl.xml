@@ -1,11 +1,7 @@
 <fest:template xmlns:fest="http://fest.mail.ru" context_name="params">
   <fest:include src="../Card/card.tmpl.xml"/>
-  <fest:for iterate="params" index="i" value="page">
-    <div class="group">
-      <fest:for iterate="page" index="j" value="card">
-        <fest:get name="card">card</fest:get>
-      </fest:for>
-    </div>
+  <fest:for iterate="params" index="i" value="card">
+    <fest:get name="card">card</fest:get>
   </fest:for>
   <div class="space__horizontal">
     <fest:space/>

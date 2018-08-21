@@ -63,13 +63,13 @@ class DevicesBlock {
   }
 
   filter(type) {
-    if (!this.params || this.type === type) {
+    if (!this.params) {
       return this;
     }
 
-    const data = type
-      ? this.params.filter(el => el.group.includes(type))
-      : this.params;
+    const data = this.type === type
+      ? this.params
+      : this.params.filter(el => el.group.includes(type));
 
     this.root.innerHTML = this.fest(data);
     this.type = type;

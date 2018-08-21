@@ -4,6 +4,53 @@
 
 import template from './scenarios.tmpl.xml';
 
+const path = '../../images_transparent/';
+
+const getImg = (type, isActive) => {
+  switch (type) {
+    case 'Climate':
+    case 'Degree':
+      return `${path}icon_temperature${isActive ? '_2' : ''}.svg`;
+    case 'Other':
+      return `${path}icon_scheduled.svg`;
+    default:
+      return `${path}icon_sun${isActive ? '_2' : ''}.svg`;
+  }
+};
+
+const getSubtitle = (type, status) => {
+  const {
+    basicActive,
+    isActive,
+    startTime,
+    endTime,
+  } = status;
+
+  if (!startTime && !endTime) {
+    return isActive ? 'Включено' : 'Выключено';
+  }
+
+  if (startTime && endTime) {
+    return '';
+  }
+
+  if (startTime) {
+    return `${isActive ? 'Выключится' : 'Включится '} в ${startTime}`;
+  }
+
+  if (!isActive && basicActive && endTime) {
+    return `Выключено до ${endTime}`;
+  }
+
+  return '';
+};
+
+const mapper = el => ({
+  img: getImg(el.type, el.status.isActive),
+  title: el.name,
+  subtitle: getSubtitle(el.type, el.status),
+});
+
 /**
  * Popup class to show pop-up block in case of win
  */
@@ -17,24 +64,31 @@ class ScenariosBlock {
     this.fest = template;
   }
 
+  reducer(accumulator, currentValue, currentIndex) {
+    const index = Math.floor(currentIndex / this.pageSize);
+
+    if (accumulator.length <= index) {
+      accumulator[index] = [];
+    }
+    accumulator[index].push(currentValue);
+
+    return accumulator;
+  }
+
   /**
    * Render block
    * @param {object} params - description of the fields needed by the fest.
    * @return {ScenariosBlock} current class instance.
    */
   render(params) {
-    const pages = [];
-    let i = 0;
-    const data = params;
-    while (data.length) {
-      pages[i] = data.splice(0, this.pageSize);
-      i += 1;
+    if (!this.root || !this.pageSize) {
+      return this; // <---- внезапный выход
     }
-    console.log('res', pages, params);
 
-    if (this.root) {
-      this.root.innerHTML = this.fest(pages);
-    }
+    const pages = params.map(mapper).reduce(this.reducer.bind(this), []);
+
+
+    this.root.innerHTML = this.fest(pages);
 
     return this;
   }

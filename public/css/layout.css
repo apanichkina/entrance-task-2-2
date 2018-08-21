@@ -5,6 +5,7 @@ body {
   height: 100%;
   font: 14px/16px YandexSans,Arial,Helvetica,sans-serif;
   color: #333333;
+  user-select: none;
 }
 
 .root {
@@ -43,6 +44,11 @@ body {
 }
 
 .text__s {
+  font-size: 13px;
+  line-height: 15px;
+}
+
+.text__xs {
   font-size: 12px;
   line-height: 14px;
 }
@@ -108,7 +114,6 @@ body {
   cursor: pointer;
   vertical-align: top;
   opacity: 0.6;
-  user-select: none;
 }
 
 .nav__tab_active {

@@ -33,10 +33,10 @@ const DEVICE_LOCATION = [
 
 const SCENARIO_NAME_BY_TYPE = {
   Degree: ['Набрать горячую ванну', 'Сделать пол тёплым во всей квартире'],
-  Light: ['Выключить весь свет в доме и во дворе', 'Включить свет  в коридоре', 'Включиить свет на кухне'],
+  Light: ['Выключить весь свет в доме и во дворе', 'Включить свет  в коридоре', 'Включить свет на кухне'],
   Climate: ['Сделать прохладно'],
   Cam: ['Выключить все камеры'],
-  Socket: ['Включиить все розетки'],
+  Socket: ['Включить все розетки'],
   Other: [
     'Я ухожу',
     'В отпуск',
@@ -63,9 +63,10 @@ function formatTimeWithZero(i) {
   return i < 10 ? `0${i}` : i;
 }
 
-function getFutureTime(delta = 2) {
+function getFutureTime(deltaH = 2, deltaM = 10) {
   const future = new Date();
-  future.setHours(future.getHours() + delta);
+  future.setHours(future.getHours() + deltaH);
+  future.setMinutes(future.getMinutes() + deltaM);
   const hours = future.getHours();
   const minutes = future.getMinutes();
   const oClock = `${formatTimeWithZero(hours)}:${formatTimeWithZero(minutes)}`;
@@ -75,12 +76,13 @@ function getFutureTime(delta = 2) {
 
 function generateStatusData() {
   const random = Math.random();
-  const futureTime = getFutureTime();
-  const startTime = random > 0.3 ? futureTime : '';
+  const futureTime = getFutureTime(random * 10, random * 20);
+  const startTime = random > 0.5 ? futureTime : '';
   const endTime = !startTime && random > 0.4 ? futureTime : '';
 
   return {
-    isActive: Math.random() > 0.03,
+    basicActive: Math.random() > 0.2,
+    isActive: Math.random() > 0.3,
     startTime,
     endTime,
   };
