@@ -3,6 +3,8 @@ import { handelScroll, proccessArrows } from './helpers';
 import ScenariosBlock from './components/Scenarios/scenarios';
 import DevicesBlock from './components/Devices/devices'; // TODO
 import RadioGroup from './components/RadioGroup/radioGroup';
+import Popup from './components/Popup/popup';
+import Slider from './components/Slider/slider';
 import '../css/index.css';
 
 function processScenarios(data) {
@@ -40,42 +42,30 @@ function processDevices(data) {
   // const popup = new ScenariosBlock(devicesContainer);
   popup.render(data);
 
-  //
-  // Клипаем кнопки, навешиваем обработчики
-  // filter.forEach((filterName) => {
-  //   const button = document.createElement('input');
-  //   button.textContent = filterName;
-  //   button.setAttribute('class', 'filter');
-  //   button.addEventListener('click', (evt) => {
-  //     popup.filter(filterName);
-  //   });
-  //   const container = document.getElementById('radio-toolbar');
-  //   container.appendChild(button);
-  // });
-
+  const checkDevicesArrows = () => proccessArrows('scroll-left', 'scroll-right', 'devices');
   handelScroll('scroll-left', 'scroll-right', 'devices', 600); // сделать ширину страниицы вычисляемой
-  proccessArrows('scroll-left', 'scroll-right', 'devices');
+  checkDevicesArrows();
 
   const container = document.getElementById('devices');
   container.addEventListener('scroll', () => {
     setTimeout(() => {
-      proccessArrows('scroll-left', 'scroll-right', 'devices');
+      checkDevicesArrows();
     }, 250);
   });
 
   window.addEventListener('resize', () => {
     setTimeout(() => {
-      proccessArrows('scroll-left', 'scroll-right', 'devices');
+      checkDevicesArrows();
     }, 250);
   });
 
 
   // получаем все фильтры (можно заменить на отдельный конец api)
-  const filter = new Set();
-  filter.add('Все');
+  const filter = new Map();
+  filter.set('Все', '');
   data.forEach((el) => {
     el.group.forEach((gr) => {
-      filter.add(gr);
+      filter.set(gr, gr);
     });
   });
 
@@ -84,7 +74,7 @@ function processDevices(data) {
   const onClickCallback = (evt) => {
     if (evt && evt.target) {
       popup.filter(evt.target.value);
-      proccessArrows('scroll-left', 'scroll-right', 'devices');
+      checkDevicesArrows();
     }
   };
 
@@ -102,5 +92,36 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   getDevices().then((data) => {
     processDevices(data);
+  });
+  const root = document.getElementsByClassName('root')[0];
+
+  const popupContainer = document.createElement('div');
+  popupContainer.classList.add('popup__substrate');
+  popupContainer.classList.add('popup_show');
+  document.body.insertBefore(popupContainer, root);
+  const popup = new Popup(popupContainer);
+  const actions = new Map();
+  actions.set('Вручную', '');
+  actions.set('Тепло', 60);
+  actions.set('Холодно', 0);
+  popup.render({
+    confirm: 'Применить',
+    cancel: 'Закрыть',
+    title: 'Xiaomi Yeelight LED Smart Bulb',
+    subtitle: 'Включится в 17:00',
+    actions,
+  });
+
+  const popupTarget = document.getElementsByClassName('logo')[0];
+  popupTarget.addEventListener('click', () => {
+    popupContainer.classList.add('popup_show');
+  });
+
+  const popupContent = document.getElementsByClassName('popup__controller')[0];
+  const slider = new Slider(popupContent);
+  slider.render({
+    onInput: e => console.log(e.target.value),
+    // iconMin: '../../images_transparent/icon_sun_min.svg',
+    // iconMax: '../../images_transparent/icon_sun_max.svg',
   });
 });

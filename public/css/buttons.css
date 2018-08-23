@@ -32,11 +32,11 @@
   background: url('/images_transparent/arrow-left__active.svg') no-repeat center center;
   cursor: pointer;
 }
-
+.popup__actions input[type="radio"],
 .radio-toolbar input[type="radio"] {
   display: none;
 }
-
+.popup__actions label,
 .radio-toolbar label {
   display: inline-block;
   background-color: #F7F7F7;
@@ -47,13 +47,39 @@
   margin-right: 10px
 }
 
+.popup__actions label {
+  background-color: #F2F1F0;
+}
+
+.popup__actions input[type="radio"]:checked+label,
 .radio-toolbar input[type="radio"]:checked+label {
   background-color: #FFD93E;
 }
 
+.button {
+  border-radius: 20px;
+  height: 60px;
+  background-color: white;
+  outline: 0;
+  border: none;
+  padding: 20px;
+  flex: 1 1 0;
+}
+
+.button_accent {
+  background-color: #FFD93E;
+}
+
+
 @media (max-width: 710px) {
   .icon-button {
     display: none;
+  }
+
+
+  .button {
+    width: 100%;
+    flex-basis: auto;
   }
 }
 

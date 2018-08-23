@@ -1,0 +1,31 @@
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="params">
+  <fest:set name="slider">
+    <div class="slide-container" id="slider1">
+      <div class="slide-container__text_start text__l text__bold">
+        <fest:if test="params.iconMin">
+          <img class="slider__icon" src="{params.iconMin}"/>
+        </fest:if>
+        <fest:if test="!params.iconMin">
+          <fest:value>params.min</fest:value>
+        </fest:if>
+      </div>
+      <div class="slide-container__text_end text__l text__bold">
+        <fest:if test="params.iconMax">
+          <img class="slider__icon" src="{params.iconMax}"/>
+        </fest:if>
+        <fest:if test="!params.iconMax">
+          <fest:value>params.max</fest:value>
+        </fest:if>
+      </div>
+      <input
+        type="range"
+        min="{params.min}"
+        max="{params.max}"
+        value="{params.value}"
+        class="slider"
+        name="{params.name}"
+      />
+    </div>
+  </fest:set>
+  <fest:get name="slider">params</fest:get>
+</fest:template>

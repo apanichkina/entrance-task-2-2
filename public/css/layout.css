@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 html,
 body {
   margin: 0;
@@ -16,6 +20,10 @@ body {
   /*height: auto;*/
   /*margin: 0 auto;*/
   /*min-height: 268px;*/
+}
+
+.root_no-scroll {
+  overflow: hidden;
 }
 
 .text__xxxl {

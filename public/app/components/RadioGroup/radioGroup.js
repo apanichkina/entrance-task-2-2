@@ -22,32 +22,44 @@ class RadioGroupBlock {
    * @return {RadioGroupBlock} current class instance.
    */
   render(params) {
+    console.log(params)
     if (!this.root) {
       return this;
     }
-
+    console.log('here')
     const {
       fields,
       name,
-      emptyValueName,
       onClick,
     } = params;
     const templateData = [];
     let index = 0;
-    fields.forEach((field) => {
-      const value = field === emptyValueName ? '' : field;
+    fields.forEach((value, key) => {
       templateData.push({
         name,
         value,
         id: [name, index += 1].join('_'),
-        label: field,
+        label: key,
         onClick,
       });
     });
+    // fields.forEach((field) => {
+    //   templateData.push({
+    //     name,
+    //     value: field,
+    //     id: [name, index += 1].join('_'),
+    //     label: field,
+    //     onClick,
+    //   });
+    // });
 
+    console.log(templateData)
     this.root.innerHTML = this.fest(templateData);
 
-    document.getElementsByName(name).forEach((el) => {
+    document.getElementsByName(name).forEach((el, ind) => {
+      if (!ind) {
+        el.checked = true;
+      }
       el.addEventListener('click', onClick);
     });
 
