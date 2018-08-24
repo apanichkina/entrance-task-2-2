@@ -1,3 +1,5 @@
+import RadioGroup from './components/RadioGroup/radioGroup';
+
 function easeInOutQuad(t, b, c, d) {
   let time = t / (d / 2);
   let result = 0;
@@ -32,10 +34,10 @@ export function scrollTo(element, change = 0, duration = 1000) {
   animateScroll();
 }
 
-export function proccessArrows(leftId, rightId, containerId) {
-  const left = document.getElementById(leftId);
-  const right = document.getElementById(rightId);
-  const container = document.getElementById(containerId);
+export function processArrows(section) {
+  const left = section.getElementsByClassName('arrow-left')[0];
+  const right = section.getElementsByClassName('arrow-right')[0];
+  const container = section.getElementsByClassName('scrolling-wrapper')[0];
 
   if (!right || !left || !container) {
     console.log('wrong params for proccessArrows: ', left, right, container);
@@ -68,10 +70,10 @@ export function proccessArrows(leftId, rightId, containerId) {
   }
 }
 
-export function handelScroll(leftId, rightId, containerId, delta) {
-  const left = document.getElementById(leftId);
-  const right = document.getElementById(rightId);
-  const container = document.getElementById(containerId);
+export function handelScroll(section, delta) {
+  const left = section.getElementsByClassName('arrow-left')[0];
+  const right = section.getElementsByClassName('arrow-right')[0];
+  const container = section.getElementsByClassName('scrolling-wrapper')[0];
   const range = container.clientWidth || delta;
 
   left.addEventListener('click', () => {
@@ -83,4 +85,62 @@ export function handelScroll(leftId, rightId, containerId, delta) {
     scrollTo(container, range, 1000);
     // container.scrollLeft += 600
   });
+}
+
+export function processScrollableSection(
+  data, constructorFn, scrollRange, sectionId, hasFilter = false,
+) {
+  const section = document.getElementById(sectionId);
+  const checkArrows = () => processArrows(section);
+  const container = section.getElementsByClassName('scrolling-wrapper')[0];
+  if (!container || !data) {
+    return;
+  }
+
+  const block = constructorFn(container);
+  block.render({
+    ...data,
+  });
+
+  handelScroll(section, scrollRange);
+  checkArrows();
+
+  container.addEventListener('scroll', () => {
+    setTimeout(() => {
+      checkArrows();
+    }, 250);
+  });
+
+  window.addEventListener('resize', () => {
+    setTimeout(() => {
+      checkArrows();
+    }, 250);
+  });
+
+  if (hasFilter) {
+    // получаем все фильтры (можно заменить на отдельный конец api)
+    const filter = new Map();
+    filter.set('Все', '');
+    data.items.forEach((el) => {
+      el.group.forEach((gr) => {
+        filter.set(gr, gr);
+      });
+    });
+
+    const radioGroupContainer = section.getElementsByClassName('radio-toolbar')[0];
+    const radioGroup = new RadioGroup(radioGroupContainer);
+    const onClickCallback = (evt) => {
+      if (evt && evt.target) {
+        block.filter(evt.target.value);
+        checkArrows();
+      }
+    };
+
+    radioGroup.render({
+      fields: filter,
+      name: sectionId,
+      emptyValueName: 'Все',
+      onClick: onClickCallback,
+    });
+  }
 }

@@ -1,7 +1,7 @@
 <fest:template xmlns:fest="http://fest.mail.ru" context_name="params">
   <div class="popup">
     <div class="popup__content">
-      <div>
+      <div class="popup__head">
         <div class="popup__title text__l text__bold">
           <fest:value>params.title</fest:value>
         </div>
@@ -10,8 +10,6 @@
         </div>
         <div class="popup__actions"></div>
       </div>
-
-
       <div class="popup__controller"></div>
     </div>
     <fest:if test="params.confirm &amp;&amp; params.cancel">
@@ -20,7 +18,7 @@
           <fest:value>params.confirm</fest:value>
         </button>
         <div class="button_space"></div>
-        <button class="button button_cancel text__bold text__l js-button-close">
+        <button class="button button_cancel text__bold text__l">
           <fest:value>params.cancel</fest:value>
         </button>
       </div>

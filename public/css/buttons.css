@@ -1,7 +1,6 @@
 .icon-button {
   height: 16px;
   width: 16px;
-  /*padding: 8px;*/
   border: none;
   outline: 0;
 }
@@ -32,10 +31,12 @@
   background: url('/images_transparent/arrow-left__active.svg') no-repeat center center;
   cursor: pointer;
 }
+
 .popup__actions input[type="radio"],
 .radio-toolbar input[type="radio"] {
   display: none;
 }
+
 .popup__actions label,
 .radio-toolbar label {
   display: inline-block;
@@ -44,22 +45,22 @@
   padding: 7px 15px 8px;
   cursor: pointer;
   white-space: nowrap;
-  margin-right: 10px
+  margin-right: 10px;
 }
 
 .popup__actions label {
   background-color: #F2F1F0;
 }
 
-.popup__actions input[type="radio"]:checked+label,
-.radio-toolbar input[type="radio"]:checked+label {
-  background-color: #FFD93E;
+.popup__actions input[type="radio"]:checked + label,
+.radio-toolbar input[type="radio"]:checked + label {
+  background-color: var(--color-accent);
 }
 
 .button {
   border-radius: 20px;
   height: 60px;
-  background-color: white;
+  background-color: var(--color-white);
   outline: 0;
   border: none;
   padding: 20px;
@@ -67,15 +68,13 @@
 }
 
 .button_accent {
-  background-color: #FFD93E;
+  background-color: var(--color-accent);
 }
 
-
-@media (max-width: 710px) {
+@media (--less-than-720-viewport) {
   .icon-button {
     display: none;
   }
-
 
   .button {
     width: 100%;

@@ -1,6 +1,6 @@
 <fest:template xmlns:fest="http://fest.mail.ru">
     <fest:set name="card">
-        <div class="card">
+        <div class="card" name="{params.group}">
             <div class="card__content-top">
               <img class="card__icon" src="{params.img}"/>
             </div>

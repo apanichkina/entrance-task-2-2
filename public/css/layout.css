@@ -1,3 +1,70 @@
+:root {
+  --color-cornflower: rgb(95, 126, 254);
+  --color-mango: rgb(255, 177, 32);
+  --reddish-pink: rgb(255, 27, 91);
+  --easter-purple: rgb(176, 99, 255);
+  --color-reddish-pink: rgb(255, 27, 91);
+  --color-easter-purple: rgb(176, 99, 255);
+  --color-light-gold: rgb(255, 232, 79);
+  --color-hardly-gold: rgb(255, 254, 243);
+  --color-primary: #24d07a;
+  --color-primary-dark: rgb(30, 195, 115);
+
+  --color-text: rgb(51, 51, 51);
+  --color-text-secondary: rgb(153, 153, 153);
+  --color-text-disabled: rgb(199, 199, 199);
+  --color-checkbox: var(--color-text-disabled);
+
+
+  --color-bad: var(--reddish-pink);
+
+  --color-hover-primary: color(var(--color-primary) alpha(12%));
+  --appbar-color: var(--color-primary);
+
+  --layout-min-width: 320px;
+  --layout-breakpoint-mobile: 570px;
+  --layout-breakpoint-mobile-landscape: 880px;
+  --layout-breakpoint-small: 960px;
+  --layout-breakpoint-tablet: 1024px;
+  --layout-breakpoint-normal: 1150px;
+
+  --bars-gap-normal: 36px;
+  --bars-gap-small: 24px;
+  --bars-gap-mobile: 16px;
+
+  --standard-media-change-speed: 0.2s;
+
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+
+  --material-animation-default: {
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: var(--standard-media-change-speed);
+  };
+
+  --banner-height: 88px;
+  --banner-height-web: 72px;
+
+  --block-border-radius: 3px;
+
+  --center-element: {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate3d(-50%, -50%, 0);
+  };
+
+  --color-accent: #ffd93e;
+  --color-white: #fff;
+  --color-black: #333;
+  --color-blur: rgba(51, 51, 51, 0.5);
+  --color-thumb-shadow: rgba(51, 51, 51, 0.1);
+  --gradient-orange: linear-gradient(to right, #ffe88c, #ffb100);
+  --gradient-blue-to-orange: linear-gradient(to right, #068fff 0, #ffd800 50%, #f76b1c 100%);
+}
+
+@custom-media --larger-than-1150-viewport (min-width: 1150px);
+@custom-media --less-than-720-viewport (max-width: 720px);
+
 * {
   box-sizing: border-box;
 }
@@ -8,7 +75,7 @@ body {
   padding: 0;
   height: 100%;
   font: 14px/16px YandexSans,Arial,Helvetica,sans-serif;
-  color: #333333;
+  color: var(--color-black);
   user-select: none;
 }
 
@@ -16,7 +83,7 @@ body {
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #ffffff;
+  background-color: var(--color-white);
   /*height: auto;*/
   /*margin: 0 auto;*/
   /*min-height: 268px;*/
@@ -86,11 +153,11 @@ body {
   box-shadow: 0 1px 0 0 #f0f0f0;
   z-index: 11;
   position: fixed;
-  top:0;
+  top: 0;
   left: 0;
   width: 100%;
   box-sizing: border-box;
-  background-color: #ffffff;
+  background-color: var(--color-white);
 }
 
 .logo {
@@ -192,7 +259,7 @@ body {
   }
 }
 
-@media (max-width: 710px) {
+@media (--less-than-720-viewport) {
   .header {
     height: 64px;
     box-shadow: none;

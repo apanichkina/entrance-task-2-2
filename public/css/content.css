@@ -93,16 +93,16 @@
   margin-left: 15px;
 }
 
-#scenarios {
+#scenarios .scrolling-wrapper {
   margin-right: -40px;
 }
 
-#devices {
+#devices .scrolling-wrapper {
   margin-right: -40px;
   margin-left: -40px;
 }
 
-@media (max-width: 710px) {
+@media (--less-than-720-viewport){
   .main {
     height: 282px;
     padding: 20px;

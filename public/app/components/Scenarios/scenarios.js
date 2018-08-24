@@ -1,7 +1,3 @@
-/**
- *  @module components/ScenariosBlock
- */
-
 import template from './scenarios.tmpl.xml';
 
 const path = '../../images_transparent/';
@@ -51,16 +47,10 @@ const mapper = el => ({
   subtitle: getSubtitle(el.type, el.status),
 });
 
-/**
- * Popup class to show pop-up block in case of win
- */
+
 class ScenariosBlock {
-  /**
-   * Create a block
-   */
-  constructor(root, cardPerPage = 0) {
+  constructor(root) {
     this.root = root;
-    this.pageSize = cardPerPage;
     this.fest = template;
   }
 
@@ -75,19 +65,14 @@ class ScenariosBlock {
     return accumulator;
   }
 
-  /**
-   * Render block
-   * @param {object} params - description of the fields needed by the fest.
-   * @return {ScenariosBlock} current class instance.
-   */
   render(params) {
+    this.pageSize = params.pageSize;
+
     if (!this.root || !this.pageSize) {
       return this; // <---- внезапный выход
     }
 
-    const pages = params.map(mapper).reduce(this.reducer.bind(this), []);
-
-
+    const pages = params.items.map(mapper).reduce(this.reducer.bind(this), []);
     this.root.innerHTML = this.fest(pages);
 
     return this;

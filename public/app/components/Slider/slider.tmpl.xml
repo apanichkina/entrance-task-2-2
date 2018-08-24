@@ -22,7 +22,7 @@
         min="{params.min}"
         max="{params.max}"
         value="{params.value}"
-        class="slider"
+        class="slider {params.className}"
         name="{params.name}"
       />
     </div>

@@ -1,7 +1,10 @@
-const PUBLIC_PATH = require('path').join(__dirname, 'public');
+const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const { initBackendStub } = require('./server/backend-stub');
+
+
+const PUBLIC_PATH = path.join(__dirname, 'public');
 
 const cssExtractTextPlugin = new ExtractTextPlugin({ filename: 'style.css' });
 
@@ -36,7 +39,10 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: ['css-hot-loader'].concat(cssExtractTextPlugin.extract({ fallback: 'style-loader', use: 'css-loader' })),
+        use: ['css-hot-loader'].concat(cssExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: ['css-loader', 'postcss-loader'],
+        })),
       },
     ],
   },

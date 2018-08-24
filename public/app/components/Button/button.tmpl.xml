@@ -1,7 +1,0 @@
-<fest:template xmlns:fest="http://fest.mail.ru">
-  <fest:set name="button">
-    <button class="button{params.accent ? ' button_accent' : ''}">
-      <fest:value>params.text</fest:value>
-    </button>
-  </fest:set>
-</fest:template>
