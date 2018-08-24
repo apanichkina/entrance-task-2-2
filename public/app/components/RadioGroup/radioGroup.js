@@ -22,11 +22,9 @@ class RadioGroupBlock {
    * @return {RadioGroupBlock} current class instance.
    */
   render(params) {
-    console.log(params)
     if (!this.root) {
       return this;
     }
-    console.log('here')
     const {
       fields,
       name,
@@ -53,7 +51,6 @@ class RadioGroupBlock {
     //   });
     // });
 
-    console.log(templateData)
     this.root.innerHTML = this.fest(templateData);
 
     document.getElementsByName(name).forEach((el, ind) => {

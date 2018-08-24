@@ -34,13 +34,13 @@ function processScenarios(data) {
 
 function processDevices(data) {
   const devicesContainer = document.getElementById('devices');
-  if (!devicesContainer || !data.length) {
+  if (!devicesContainer || !data) {
     return;
   }
 
-  const popup = new DevicesBlock(devicesContainer);// TODO
+  const devices = new DevicesBlock(devicesContainer);// TODO
   // const popup = new ScenariosBlock(devicesContainer);
-  popup.render(data);
+  devices.render(data);
 
   const checkDevicesArrows = () => proccessArrows('scroll-left', 'scroll-right', 'devices');
   handelScroll('scroll-left', 'scroll-right', 'devices', 600); // сделать ширину страниицы вычисляемой
@@ -63,7 +63,7 @@ function processDevices(data) {
   // получаем все фильтры (можно заменить на отдельный конец api)
   const filter = new Map();
   filter.set('Все', '');
-  data.forEach((el) => {
+  data.items.forEach((el) => {
     el.group.forEach((gr) => {
       filter.set(gr, gr);
     });
@@ -73,7 +73,7 @@ function processDevices(data) {
   const radioGroup = new RadioGroup(radioGroupContainer);
   const onClickCallback = (evt) => {
     if (evt && evt.target) {
-      popup.filter(evt.target.value);
+      devices.filter(evt.target.value);
       checkDevicesArrows();
     }
   };
@@ -90,38 +90,61 @@ document.addEventListener('DOMContentLoaded', () => {
   getScenarios().then((data) => {
     processScenarios(data);
   });
-  getDevices().then((data) => {
-    processDevices(data);
-  });
+
   const root = document.getElementsByClassName('root')[0];
 
   const popupContainer = document.createElement('div');
   popupContainer.classList.add('popup__substrate');
-  popupContainer.classList.add('popup_show');
+  // popupContainer.classList.add('popup_show');
   document.body.insertBefore(popupContainer, root);
   const popup = new Popup(popupContainer);
   const actions = new Map();
   actions.set('Вручную', '');
   actions.set('Тепло', 60);
   actions.set('Холодно', 0);
-  popup.render({
-    confirm: 'Применить',
-    cancel: 'Закрыть',
-    title: 'Xiaomi Yeelight LED Smart Bulb',
-    subtitle: 'Включится в 17:00',
-    actions,
-  });
-
-  const popupTarget = document.getElementsByClassName('logo')[0];
-  popupTarget.addEventListener('click', () => {
+  const renderPopup = (data) => {
+    console.log(data)
+    popup.render({
+      confirm: 'Применить',
+      cancel: 'Закрыть',
+      title: data.title || 'Xiaomi Yeelight LED Smart Bulb',
+      subtitle: data.subtitle || 'Включится в 17:00',
+      actions,
+    });
     popupContainer.classList.add('popup_show');
-  });
+    const popupContent = document.getElementsByClassName('popup__controller')[0];
+    const slider = new Slider(popupContent);
+    slider.render({
+      onInput: e => console.log(e.target.value),
+      // iconMin: '../../images_transparent/icon_sun_min.svg',
+      // iconMax: '../../images_transparent/icon_sun_max.svg',
+    });
+  }
 
-  const popupContent = document.getElementsByClassName('popup__controller')[0];
-  const slider = new Slider(popupContent);
-  slider.render({
-    onInput: e => console.log(e.target.value),
-    // iconMin: '../../images_transparent/icon_sun_min.svg',
-    // iconMax: '../../images_transparent/icon_sun_max.svg',
+  getDevices().then((data) => {
+    processDevices({
+      onClick: renderPopup,
+      items: data,
+    });
   });
+  // popup.render({
+  //   confirm: 'Применить',
+  //   cancel: 'Закрыть',
+  //   title: 'Xiaomi Yeelight LED Smart Bulb',
+  //   subtitle: 'Включится в 17:00',
+  //   actions,
+  // });
+
+  // const popupTarget = document.getElementsByClassName('logo')[0];
+  // popupTarget.addEventListener('click', () => {
+  //   popupContainer.classList.add('popup_show');
+  // });
+  //
+  // const popupContent = document.getElementsByClassName('popup__controller')[0];
+  // const slider = new Slider(popupContent);
+  // slider.render({
+  //   onInput: e => console.log(e.target.value),
+  //   // iconMin: '../../images_transparent/icon_sun_min.svg',
+  //   // iconMax: '../../images_transparent/icon_sun_max.svg',
+  // });
 });

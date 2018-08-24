@@ -209,8 +209,14 @@ class DevicesBlock {
       return this;
     }
 
-    this.params = params.map(mapper);
+    this.params = params.items.map(mapper);
     this.root.innerHTML = this.fest(this.params);
+    if (params.onClick) {
+      const cards = this.root.getElementsByClassName('card')
+      for (let i = 0; i < cards.length; i++) {
+        cards[i].addEventListener('click', () => params.onClick(this.params[i]));
+      }
+    }
 
     return this;
   }
@@ -426,11 +432,9 @@ class RadioGroupBlock {
    * @return {RadioGroupBlock} current class instance.
    */
   render(params) {
-    console.log(params)
     if (!this.root) {
       return this;
     }
-    console.log('here')
     const {
       fields,
       name,
@@ -457,7 +461,6 @@ class RadioGroupBlock {
     //   });
     // });
 
-    console.log(templateData)
     this.root.innerHTML = this.fest(templateData);
 
     document.getElementsByName(name).forEach((el, ind) => {
@@ -934,13 +937,13 @@ function processScenarios(data) {
 
 function processDevices(data) {
   const devicesContainer = document.getElementById('devices');
-  if (!devicesContainer || !data.length) {
+  if (!devicesContainer || !data) {
     return;
   }
 
-  const popup = new _components_Devices_devices__WEBPACK_IMPORTED_MODULE_3__["default"](devicesContainer);// TODO
+  const devices = new _components_Devices_devices__WEBPACK_IMPORTED_MODULE_3__["default"](devicesContainer);// TODO
   // const popup = new ScenariosBlock(devicesContainer);
-  popup.render(data);
+  devices.render(data);
 
   const checkDevicesArrows = () => Object(_helpers__WEBPACK_IMPORTED_MODULE_1__["proccessArrows"])('scroll-left', 'scroll-right', 'devices');
   Object(_helpers__WEBPACK_IMPORTED_MODULE_1__["handelScroll"])('scroll-left', 'scroll-right', 'devices', 600); // сделать ширину страниицы вычисляемой
@@ -963,7 +966,7 @@ function processDevices(data) {
   // получаем все фильтры (можно заменить на отдельный конец api)
   const filter = new Map();
   filter.set('Все', '');
-  data.forEach((el) => {
+  data.items.forEach((el) => {
     el.group.forEach((gr) => {
       filter.set(gr, gr);
     });
@@ -973,7 +976,7 @@ function processDevices(data) {
   const radioGroup = new _components_RadioGroup_radioGroup__WEBPACK_IMPORTED_MODULE_4__["default"](radioGroupContainer);
   const onClickCallback = (evt) => {
     if (evt && evt.target) {
-      popup.filter(evt.target.value);
+      devices.filter(evt.target.value);
       checkDevicesArrows();
     }
   };
@@ -990,40 +993,63 @@ document.addEventListener('DOMContentLoaded', () => {
   Object(_api__WEBPACK_IMPORTED_MODULE_0__["getScenarios"])().then((data) => {
     processScenarios(data);
   });
-  Object(_api__WEBPACK_IMPORTED_MODULE_0__["getDevices"])().then((data) => {
-    processDevices(data);
-  });
+
   const root = document.getElementsByClassName('root')[0];
 
   const popupContainer = document.createElement('div');
   popupContainer.classList.add('popup__substrate');
-  popupContainer.classList.add('popup_show');
+  // popupContainer.classList.add('popup_show');
   document.body.insertBefore(popupContainer, root);
   const popup = new _components_Popup_popup__WEBPACK_IMPORTED_MODULE_5__["default"](popupContainer);
   const actions = new Map();
   actions.set('Вручную', '');
   actions.set('Тепло', 60);
   actions.set('Холодно', 0);
-  popup.render({
-    confirm: 'Применить',
-    cancel: 'Закрыть',
-    title: 'Xiaomi Yeelight LED Smart Bulb',
-    subtitle: 'Включится в 17:00',
-    actions,
-  });
-
-  const popupTarget = document.getElementsByClassName('logo')[0];
-  popupTarget.addEventListener('click', () => {
+  const renderPopup = (data) => {
+    console.log(data)
+    popup.render({
+      confirm: 'Применить',
+      cancel: 'Закрыть',
+      title: data.title || 'Xiaomi Yeelight LED Smart Bulb',
+      subtitle: data.subtitle || 'Включится в 17:00',
+      actions,
+    });
     popupContainer.classList.add('popup_show');
-  });
+    const popupContent = document.getElementsByClassName('popup__controller')[0];
+    const slider = new _components_Slider_slider__WEBPACK_IMPORTED_MODULE_6__["default"](popupContent);
+    slider.render({
+      onInput: e => console.log(e.target.value),
+      // iconMin: '../../images_transparent/icon_sun_min.svg',
+      // iconMax: '../../images_transparent/icon_sun_max.svg',
+    });
+  }
 
-  const popupContent = document.getElementsByClassName('popup__controller')[0];
-  const slider = new _components_Slider_slider__WEBPACK_IMPORTED_MODULE_6__["default"](popupContent);
-  slider.render({
-    onInput: e => console.log(e.target.value),
-    // iconMin: '../../images_transparent/icon_sun_min.svg',
-    // iconMax: '../../images_transparent/icon_sun_max.svg',
+  Object(_api__WEBPACK_IMPORTED_MODULE_0__["getDevices"])().then((data) => {
+    processDevices({
+      onClick: renderPopup,
+      items: data,
+    });
   });
+  // popup.render({
+  //   confirm: 'Применить',
+  //   cancel: 'Закрыть',
+  //   title: 'Xiaomi Yeelight LED Smart Bulb',
+  //   subtitle: 'Включится в 17:00',
+  //   actions,
+  // });
+
+  // const popupTarget = document.getElementsByClassName('logo')[0];
+  // popupTarget.addEventListener('click', () => {
+  //   popupContainer.classList.add('popup_show');
+  // });
+  //
+  // const popupContent = document.getElementsByClassName('popup__controller')[0];
+  // const slider = new Slider(popupContent);
+  // slider.render({
+  //   onInput: e => console.log(e.target.value),
+  //   // iconMin: '../../images_transparent/icon_sun_min.svg',
+  //   // iconMax: '../../images_transparent/icon_sun_max.svg',
+  // });
 });
 
 

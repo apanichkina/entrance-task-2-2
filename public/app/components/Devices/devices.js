@@ -87,8 +87,14 @@ class DevicesBlock {
       return this;
     }
 
-    this.params = params.map(mapper);
+    this.params = params.items.map(mapper);
     this.root.innerHTML = this.fest(this.params);
+    if (params.onClick) {
+      const cards = this.root.getElementsByClassName('card')
+      for (let i = 0; i < cards.length; i++) {
+        cards[i].addEventListener('click', () => params.onClick(this.params[i]));
+      }
+    }
 
     return this;
   }
