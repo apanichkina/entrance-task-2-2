@@ -126,6 +126,8 @@ const halfCircleDegrees = circleDegrees / 2;
 function CircularSlider(options) {
   let mouseDown = false;
 
+  const rangeValue = options.range[1] - options.range[0];
+
   const insideradius = options.radius - options.strokewidth / 2;
   const circumference = 2 * Math.PI * (insideradius);
 
@@ -164,7 +166,7 @@ function CircularSlider(options) {
   bottomMask.setAttribute('cx', options.radius);
   bottomMask.setAttribute('cy', options.radius);
   bottomMask.setAttribute('r', insideradius);
-  bottomMask.setAttribute('stroke-width', options.strokewidth);
+  bottomMask.setAttribute('stroke-width', options.strokewidth + 0.5);
   bottomMask.setAttribute('stroke-dasharray', `${circumference * (1 - options.bottommaskpercent / 100)} ${circumference}`);
   bottomMask.setAttribute('stroke-dashoffset', circumference);
   bottomMask.style.transform = `rotate(${(halfCircleDegrees + bottomMaskDegrees) / 2}deg)`;
@@ -184,20 +186,11 @@ function CircularSlider(options) {
   const dial = document.createElement('div');
   dial.setAttribute('class', 'dial');
 
-  // var bottomMask = document.createElement('div');
-  // dial.setAttribute('class', 'bottom__mask');
-
-  // var input = document.createElement("input");
-  // input.setAttribute("type", "range");
-  // input.setAttribute("id", "control");
-  // input.setAttribute("name", "points");
-  // input.setAttribute("min", options.range[0]);
-  // input.setAttribute("max", options.range[1]);
-  // input.setAttribute("step", options.step);
-  // input.setAttribute("value", "0");
-  // input.addEventListener("input", function(event) {
-  //   this.progress(event.target.valueAsNumber);
-  // });
+  const display = sliderContainer.getElementsByClassName('display')[0];
+  display.style.top = `${options.strokewidth}px`;
+  display.style.left = `${options.strokewidth}px`;
+  display.style.height = `${2 * (options.radius - options.strokewidth)}px`;
+  display.style.width = `${2 * (options.radius - options.strokewidth)}px`;
 
   const progressMask = document.createElementNS(
     'http://www.w3.org/2000/svg',
@@ -208,23 +201,11 @@ function CircularSlider(options) {
   progressMask.setAttribute('cy', options.radius);
   progressMask.setAttribute('r', insideradius);
   progressMask.setAttribute('stroke-width', options.strokewidth + 0.5); // to remove borders
-  // progressMask.setAttribute('stroke-miterlimit', 50);
   progressMask.setAttribute('stroke-dasharray', '4,1');
   progressMask.setAttribute('stroke-dashoffset', '30%');
-  // var pricing = document.createElement("span");
-  // pricing.setAttribute('class', 'pricing');
-  // pricing.textContent = "$" + options.range[0];
-  //
-  // var box = document.createElement("span");
-  // box.setAttribute('class', 'box');
-  // box.setAttribute("style", "background-color: " + options.color);
-  //
-  // var text = document.createElement("span");
-  // text.setAttribute('class', 'text');
-  // text.textContent = options.text;
-  //
-  // var div = document.createElement("div");
-  // div.setAttribute('class', 'textContainer');
+  const pricing = document.createElement('span');
+  pricing.setAttribute('class', 'pricing');
+  pricing.textContent = `+${options.range[0]}`;
 
   svg.appendChild(progressMeter);
   svg.appendChild(progressValue);
@@ -232,30 +213,27 @@ function CircularSlider(options) {
   svg.appendChild(bottomMask);
 
   sliderContainer.appendChild(svg);
+  // sliderContainer.appendChild(display);
   sliderContainer.appendChild(dial);
-  // sliderContainer.appendChild(input);
 
-  // div.appendChild(pricing);
-  // div.appendChild(box);
-  // div.appendChild(text);
-  // document.querySelector('.price').appendChild(div);
+  display.appendChild(pricing);
 
 
   this.handleInput = () => {
     sliderContainer.addEventListener('mouseup', (e) => {
-      e.path[1].style.zIndex = '0';
+      // e.path[1].style.zIndex = '0';
       mouseDown = false;
     });
     sliderContainer.addEventListener('touchend', (e) => {
-      e.path[1].style.zIndex = '0';
+      // e.path[1].style.zIndex = '0';
       mouseDown = false;
     });
     sliderContainer.addEventListener('mousedown', (e) => {
-      e.path[1].style.zIndex = '123';
+      // e.path[1].style.zIndex = '123';
       mouseDown = true;
     });
     sliderContainer.addEventListener('touchstart', (e) => {
-      e.path[1].style.zIndex = '123';
+      // e.path[1].style.zIndex = '123';
       mouseDown = true;
     });
     progressMeter.addEventListener('click', this.update);
@@ -275,7 +253,7 @@ function CircularSlider(options) {
   };
 
   this.move = (e) => {
-    e.path[1].style.zIndex = '123';
+    // e.path[1].style.zIndex = '123';
 
     // console.log('Event: ' + e.type);
     let position;
@@ -293,16 +271,20 @@ function CircularSlider(options) {
     const atan = Math.atan2(coords.x - options.radius, coords.y - options.radius);
     const deg = Math.ceil(-atan / (Math.PI / halfCircleDegrees) + halfCircleDegrees);
 
+    let degEvaluate = deg;
     // console.log(deg);
     if (deg < leftBorder + 1 || deg > rightBorder - 1) {
-      const x = `${(options.radius - 27) * Math.sin(deg * Math.PI / halfCircleDegrees) + options.radius}px`;
-      const y = `${(options.radius - 27) * -Math.cos(deg * Math.PI / halfCircleDegrees) + options.radius}px`;
-
-      dial.style.transform = `translate(${x},${y}) rotate(${deg}deg)`;
-
-      // pricing.textContent = "$" + points;
-      this.progressDegrees(deg);
+      degEvaluate = deg;
+    } else if ((leftBorder - deg) > (deg - rightBorder)) {
+      degEvaluate = leftBorder;
+    } else {
+      degEvaluate = rightBorder;
     }
+    const x = `${(options.radius - 27) * Math.sin(degEvaluate * Math.PI / halfCircleDegrees) + options.radius}px`;
+    const y = `${(options.radius - 27) * -Math.cos(degEvaluate * Math.PI / halfCircleDegrees) + options.radius}px`;
+
+    dial.style.transform = `translate(${x},${y}) rotate(${degEvaluate}deg)`;
+    this.progressDegrees(degEvaluate);
   };
   //
   // this.progress = (value) => {
@@ -320,15 +302,15 @@ function CircularSlider(options) {
 
     const progress = (deg) / circleDegrees;
     const dashoffset = circumference * (1 - progress);
-    // console.log('dashoffset: ' + dashoffset);
     progressValue.style.strokeDashoffset = dashoffset;
 
-    const points = Math.ceil((deg) * options.range[1] / (circleDegrees - rightBorder + leftBorder));
+    const points = options.range[0] + Math.ceil((deg) * rangeValue / (circleDegrees - rightBorder + leftBorder));
+    pricing.textContent = `${points > 0 ? '+' : ''}${points}`;
     console.log('points: ', points);
   };
 
   progressValue.style.strokeDasharray = circumference;
-  // this.progress(input.value);
+  this.progressDegrees(0);
 
   const xx = `${(options.radius - 27) * Math.sin(Math.PI / halfCircleDegrees) + options.radius}px`;
   const yy = `${(options.radius - 27) * -Math.cos(Math.PI / halfCircleDegrees) + options.radius}px`;
@@ -337,17 +319,11 @@ function CircularSlider(options) {
 
 
 function processCircle() {
-  // const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  // svg.setAttribute('class', 'progress');
-  // svg.setAttribute('width', 500);
-  // svg.setAttribute('height', 500);
-  // svg.setAttribute('viewBox', `0 0 ${500} ${500}`);
-  // svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
   const container = document.getElementById('container');
   const slider = new CircularSlider({
     container,
-    color: '#FF7D36',
-    range: [0, 1567],
+    color: '#F5A623',
+    range: [-10, 30],
     step: 1,
     radius: 111,
     text: 'Entertainment',
@@ -355,8 +331,6 @@ function processCircle() {
     bottommaskpercent: 20,
   });
   slider.handleInput();
-
-  // document.querySelector('.sliderContainer').appendChild(svg);
 }
 
 
@@ -700,7 +674,7 @@ __webpack_require__.r(__webpack_exports__);
 	},__fest_param = function __fest_param(fn) {
 		fn.param = true;
 		return fn;
-	},i18n=__fest_self && typeof __fest_self.i18n === "function" ? __fest_self.i18n : function (str) {return str;},___fest_log_error;if(typeof __fest_error === "undefined"){___fest_log_error = (typeof console !== "undefined" && console.error) ? function(){return Function.prototype.apply.call(console.error, console, arguments)} : function(){};}else{___fest_log_error=__fest_error};function __fest_log_error(msg){___fest_log_error(msg+"\nin block \""+__fest_debug_block+"\" at line: "+__fest_debug_line+"\nfile: "+__fest_debug_file)}function __fest_call(fn, params,cp){if(cp)for(var i in params)if(typeof params[i]=="function"&&params[i].param)params[i]=params[i]();return fn.call(__fest_self,params)}var params=__fest_context;__fest_buf+=("<div class=\"popup\"><div class=\"popup__content\"><div class=\"popup__head\"><div class=\"popup__title text__l text__bold\">");try{__fest_buf+=(__fest_escapeHTML(params.title))}catch(e){__fest_log_error(e.message + "5");}__fest_buf+=("</div><div class=\"popup__subtitle text__xs\">");try{__fest_buf+=(__fest_escapeHTML(params.subtitle))}catch(e){__fest_log_error(e.message + "8");}__fest_buf+=("</div><div class=\"popup__actions\"></div></div><div class=\"popup__controller\"><div id=\"container\"><div class=\"sliderContainer\"></div></div></div></div>");try{__fest_if=params.confirm && params.cancel}catch(e){__fest_if=false;__fest_log_error(e.message);}if(__fest_if){__fest_buf+=("<div class=\"popup__button__container\"><button class=\"button button_confirm button_accent text__bold text__l\">");try{__fest_buf+=(__fest_escapeHTML(params.confirm))}catch(e){__fest_log_error(e.message + "21");}__fest_buf+=("</button><div class=\"button_space\"></div><button class=\"button button_cancel text__bold text__l\">");try{__fest_buf+=(__fest_escapeHTML(params.cancel))}catch(e){__fest_log_error(e.message + "25");}__fest_buf+=("</button></div>");}__fest_buf+=("</div>");__fest_to=__fest_chunks.length;if (__fest_to) {__fest_iterator = 0;for (;__fest_iterator<__fest_to;__fest_iterator++) {__fest_chunk=__fest_chunks[__fest_iterator];if (typeof __fest_chunk==="string") {__fest_html+=__fest_chunk;} else {__fest_fn=__fest_blocks[__fest_chunk.name];if (__fest_fn) __fest_html+=__fest_call(__fest_fn,__fest_chunk.params,__fest_chunk.cp);}}return __fest_html+__fest_buf;} else {return __fest_buf;}});
+	},i18n=__fest_self && typeof __fest_self.i18n === "function" ? __fest_self.i18n : function (str) {return str;},___fest_log_error;if(typeof __fest_error === "undefined"){___fest_log_error = (typeof console !== "undefined" && console.error) ? function(){return Function.prototype.apply.call(console.error, console, arguments)} : function(){};}else{___fest_log_error=__fest_error};function __fest_log_error(msg){___fest_log_error(msg+"\nin block \""+__fest_debug_block+"\" at line: "+__fest_debug_line+"\nfile: "+__fest_debug_file)}function __fest_call(fn, params,cp){if(cp)for(var i in params)if(typeof params[i]=="function"&&params[i].param)params[i]=params[i]();return fn.call(__fest_self,params)}var params=__fest_context;__fest_buf+=("<div class=\"popup\"><div class=\"popup__content\"><div class=\"popup__head\"><div class=\"popup__title text__l text__bold\">");try{__fest_buf+=(__fest_escapeHTML(params.title))}catch(e){__fest_log_error(e.message + "5");}__fest_buf+=("</div><div class=\"popup__subtitle text__xs\">");try{__fest_buf+=(__fest_escapeHTML(params.subtitle))}catch(e){__fest_log_error(e.message + "8");}__fest_buf+=("</div><div class=\"popup__actions\"></div></div><div class=\"popup__controller\"><div id=\"container\"><div class=\"sliderContainer\"><div class=\"display text__xxxl text__bold\"></div></div></div></div></div>");try{__fest_if=params.confirm && params.cancel}catch(e){__fest_if=false;__fest_log_error(e.message);}if(__fest_if){__fest_buf+=("<div class=\"popup__button__container\"><button class=\"button button_confirm button_accent text__bold text__l\">");try{__fest_buf+=(__fest_escapeHTML(params.confirm))}catch(e){__fest_log_error(e.message + "23");}__fest_buf+=("</button><div class=\"button_space\"></div><button class=\"button button_cancel text__bold text__l\">");try{__fest_buf+=(__fest_escapeHTML(params.cancel))}catch(e){__fest_log_error(e.message + "27");}__fest_buf+=("</button></div>");}__fest_buf+=("</div>");__fest_to=__fest_chunks.length;if (__fest_to) {__fest_iterator = 0;for (;__fest_iterator<__fest_to;__fest_iterator++) {__fest_chunk=__fest_chunks[__fest_iterator];if (typeof __fest_chunk==="string") {__fest_html+=__fest_chunk;} else {__fest_fn=__fest_blocks[__fest_chunk.name];if (__fest_fn) __fest_html+=__fest_call(__fest_fn,__fest_chunk.params,__fest_chunk.cp);}}return __fest_html+__fest_buf;} else {return __fest_buf;}});
 
 /***/ }),
 

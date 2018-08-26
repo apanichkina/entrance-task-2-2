@@ -12,7 +12,9 @@
       </div>
       <div class="popup__controller">
         <div id="container">
-          <div class="sliderContainer"></div>
+          <div class="sliderContainer">
+            <div class="display text__xxxl text__bold"></div>
+          </div>
         </div>
       </div>
     </div>

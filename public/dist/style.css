@@ -817,7 +817,8 @@ g {
 #container {
   width: 220px;
   height: 220px;
-  display: inline-block;
+  display: block;
+  margin: 0 auto;
   position: relative;
 }
 
@@ -826,8 +827,8 @@ g {
 }
 
 .progress {
-  width: 100%;
-  height: 100%;
+  /*width: 100%;*/
+  /*height: 100%;*/
   position: relative;
 }
 
@@ -841,7 +842,7 @@ g {
 }
 
 .progress__value {
-  stroke: #f77a52;
+  stroke: #F5A623;
   opacity: 0.7;
   z-index: -100;
   transform-origin: 50% 50%;
@@ -855,13 +856,26 @@ g {
   transform-origin: 50% 50%;
 }
 
+.display {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: center;
+      align-items: center;
+  -ms-flex-pack: center;
+      justify-content: center;
+  position: absolute;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px 0 rgba(134, 121, 71, .45);
+  z-index: 128;
+}
+
 .dial {
   cursor: pointer;
   height: 8px;
   width: 12px;
-  margin-left: -6px;
+  margin-left: -7px;
   position: absolute;
-  top: -4px;
+  top: -5px;
   z-index: 124;
   background: url('/images/icon_arrow.svg') no-repeat left top;
 }
@@ -872,15 +886,23 @@ g {
   stroke: #fff;
 }
 
-input {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%;
-  z-index: -1;
-  opacity: 0;
-}
+/*input {*/
+
+/*position: absolute;*/
+
+/*top: 50%;*/
+
+/*left: 50%;*/
+
+/*transform: translate(-50%, -50%);*/
+
+/*width: 100%;*/
+
+/*z-index: -1;*/
+
+/*opacity: 0;*/
+
+/*}*/
 
 .price {
   -ms-flex-item-align: center;
