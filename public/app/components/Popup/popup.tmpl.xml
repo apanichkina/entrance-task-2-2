@@ -10,7 +10,11 @@
         </div>
         <div class="popup__actions"></div>
       </div>
-      <div class="popup__controller"></div>
+      <div class="popup__controller">
+        <div id="container">
+          <div class="sliderContainer"></div>
+        </div>
+      </div>
     </div>
     <fest:if test="params.confirm &amp;&amp; params.cancel">
       <div class="popup__button__container">

@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
       params => (new DevicesBlock(params)),
       600,
       'devices',
-      true
+      true,
     );
   });
 });

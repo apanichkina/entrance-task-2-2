@@ -1,6 +1,7 @@
 import template from './devices.tmpl.xml';
 import Slider from '../Slider/slider';
 import RadioGroup from '../RadioGroup/radioGroup';
+import processCircle from '../../circle';
 
 const path = '../../images_transparent/';
 
@@ -151,6 +152,8 @@ class DevicesBlock {
           ...sliderData,
         });
         createPopupActions(popupRoot, data.type);
+      } else {
+        processCircle();
       }
 
       popup.showPopup();
