@@ -1,8 +1,6 @@
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 const { initBackendStub } = require('./server/backend-stub');
-
 
 const PUBLIC_PATH = path.join(__dirname, 'public');
 
@@ -48,7 +46,6 @@ module.exports = {
   },
   plugins: [
     cssExtractTextPlugin,
-    new CleanWebpackPlugin([`${PUBLIC_PATH}/dist`]),
   ],
   devServer: {
     contentBase: PUBLIC_PATH,

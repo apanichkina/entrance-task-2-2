@@ -28,7 +28,7 @@ const DEVICE_LOCATION = [
   'Кухня',
   // 'Сад',
   // 'Комната',
-  'Санузел',
+  // 'Санузел',
 ];
 
 const SCENARIO_NAME_BY_TYPE = {
@@ -105,11 +105,14 @@ function generateDeviceDetails() {
   const group = [];
 
   switch (type) {
-    case 'Cam':
-      group.push('Камеры');
+    case 'Degree':
+      group.push('Термометры');
       break;
     case 'Light':
       group.push('Лампочки');
+      break;
+    case 'Climate':
+      group.push('Полы');
       break;
     default:
       break;

@@ -7,7 +7,7 @@
   "author": "Anna Panichkina <annjellyiu5@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "webpack-dev-server",
+    "start": "fest-build --dir=public && webpack && webpack-dev-server",
     "build": "fest-build --dir=public",
     "beauty": "webpack --mode production",
     "watch": "webpack --watch"
