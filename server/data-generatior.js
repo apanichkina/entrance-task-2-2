@@ -19,15 +19,15 @@ const DEVICE_NAME_BY_TYPE = {
   Degree: ['Cooler', 'Eve Degree'],
   Light: ['Yeelight LED Smart Bulb', 'Zhirui', 'Mini Day & Dusk', 'LED Ceiling Lamp'],
   Climate: ['Warm Floor', 'Mi Air Purifier'],
-  Cam: ['Smart Socket Power Plug', 'MiJia 360°'],
-  Socket: ['Smart Socket Power Plug', 'Smart plug'],
-  Other: ['Speaker', 'Door/Window Open sensor', 'Smoke alarm'],
+  // Cam: ['Smart Socket Power Plug', 'MiJia 360°'],
+  // Socket: ['Smart Socket Power Plug', 'Smart plug'],
+  // Other: ['Speaker', 'Door/Window Open sensor', 'Smoke alarm'],
 };
 
 const DEVICE_LOCATION = [
   'Кухня',
-  'Сад',
-  'Комната',
+  // 'Сад',
+  // 'Комната',
   'Санузел',
 ];
 

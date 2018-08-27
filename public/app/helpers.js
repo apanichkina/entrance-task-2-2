@@ -137,6 +137,7 @@ export function processScrollableSection(
     };
 
     radioGroup.render({
+      collapse: true,
       fields: filter,
       name: sectionId,
       emptyValueName: 'Все',

@@ -14,21 +14,21 @@
 }
 
 .arrow-left {
-  background: url('/images_transparent/arrow-left.svg') no-repeat center center;
+  background: url('/images/arrow-left.svg') no-repeat center center;
 }
 
 .arrow-left__active {
-  background: url('/images_transparent/arrow-left__active.svg') no-repeat center center;
+  background: url('/images/arrow-left__active.svg') no-repeat center center;
   cursor: pointer;
 }
 
 .arrow-right {
-  background: url('/images_transparent/arrow-left.svg') no-repeat center center;
+  background: url('/images/arrow-left.svg') no-repeat center center;
   transform: scale(-1, 1);
 }
 
 .arrow-right__active {
-  background: url('/images_transparent/arrow-left__active.svg') no-repeat center center;
+  background: url('/images/arrow-left__active.svg') no-repeat center center;
   cursor: pointer;
 }
 
@@ -41,7 +41,7 @@
 .radio-toolbar label {
   display: inline-block;
   background-color: #F7F7F7;
-  border-radius: 20px;
+  border-radius: var(--block-border-radius);
   padding: 7px 15px 8px;
   cursor: pointer;
   white-space: nowrap;
@@ -58,7 +58,7 @@
 }
 
 .button {
-  border-radius: 20px;
+  border-radius: var(--block-border-radius);
   height: 60px;
   background-color: var(--color-white);
   outline: 0;
@@ -80,5 +80,8 @@
     width: 100%;
     flex-basis: auto;
   }
-}
 
+  .radio-toolbar label {
+    display: none;
+  }
+}

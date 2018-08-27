@@ -1,0 +1,27 @@
+.select__container {
+  position: relative;
+  display: inline-block;
+}
+
+.select__container select {
+  webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: 0;
+  display: block;
+  padding: 7px 30px 8px 15px;
+  margin: 0;
+  border: none;
+  border-radius: var(--block-border-radius);
+  background: url('/images/arrow-down.svg') 88% / 12% no-repeat var(--color-accent);
+}
+
+.radio-toolbar .select__container {
+  display: none;
+}
+
+@media (--less-than-720-viewport) {
+  .radio-toolbar .select__container {
+    display: inline-block;
+  }
+}

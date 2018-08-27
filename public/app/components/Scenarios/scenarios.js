@@ -1,6 +1,6 @@
 import template from './scenarios.tmpl.xml';
 
-const path = '../../images_transparent/';
+const path = '../../images/';
 
 const getImg = (type, isActive) => {
   switch (type) {

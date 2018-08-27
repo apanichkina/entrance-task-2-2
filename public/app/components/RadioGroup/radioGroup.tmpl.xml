@@ -1,9 +1,23 @@
 <fest:template xmlns:fest="http://fest.mail.ru" context_name="params">
   <fest:include src="../Radio/radio.tmpl.xml"/>
+  <fest:include src="../Select/select.tmpl.xml"/>
   <fest:set name="radioGroup">
-    <fest:for iterate="params" index="i" value="btn">
+    <fest:if test="params.hasSpaceStart">
+      <div class="space__horizontal">
+        <fest:space/>
+      </div>
+    </fest:if>
+    <fest:for iterate="params.items" index="i" value="btn">
       <fest:get name="radio">btn</fest:get>
     </fest:for>
+    <fest:if test="params.hasSpaceEnd">
+      <div class="space__horizontal">
+        <fest:space/>
+      </div>
+    </fest:if>
+    <fest:if test="params.collapse">
+      <fest:get name="select">params</fest:get>
+    </fest:if>
   </fest:set>
   <fest:get name="radioGroup">params</fest:get>
 </fest:template>

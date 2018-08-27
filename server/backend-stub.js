@@ -1,7 +1,7 @@
 const { generateDevices, generateScenarios } = require('./data-generatior');
 
-const devices = generateDevices(20);
-const scenarios = generateScenarios(20);
+const devices = generateDevices(15);
+const scenarios = generateScenarios(15);
 
 exports.initBackendStub = function (app) {
   app.get('/api/devices', (req, res) => {

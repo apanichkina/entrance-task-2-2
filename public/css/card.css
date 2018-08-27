@@ -7,7 +7,7 @@
   box-sizing: border-box;
   padding: 14px;
   background-color: #F7F7F7;
-  border-radius: 20px;
+  border-radius: var(--block-border-radius);
   vertical-align: top;
   cursor: pointer;
 }

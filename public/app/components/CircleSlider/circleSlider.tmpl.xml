@@ -1,9 +1,9 @@
-<fest:template xmlns:fest="http://fest.mail.ru" context_name="params">
-  <fest:set name="circle">
-    <div id="container">
-      <div class="price"></div>
-      <div class="sliderContainer"></div>
+<fest:template xmlns:fest="http://fest.mail.ru">
+  <div class="circle-slider__wrapper">
+    <div class="circle-slider__container">
+      <div class="display text__xxxl text__bold">
+        <span class="display__text"></span>
+      </div>
     </div>
-  </fest:set>
-  <fest:get name="circle">params</fest:get>
+  </div>
 </fest:template>

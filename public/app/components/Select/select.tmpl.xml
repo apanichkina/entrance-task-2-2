@@ -1,0 +1,13 @@
+<fest:template xmlns:fest="http://fest.mail.ru" context_name="params">
+  <fest:set name="select">
+    <div class="select__container">
+      <select class="text__s text__bold">
+        <fest:for iterate="params.items" index="i" value="opt">
+          <option value="{opt.value}">
+            <fest:value>opt.label</fest:value>
+          </option>
+        </fest:for>
+      </select>
+    </div>
+  </fest:set>
+</fest:template>

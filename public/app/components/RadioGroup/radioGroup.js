@@ -15,12 +15,20 @@ class RadioGroupBlock {
       fields,
       name,
       onClick,
+      hasSpaceStart = false,
+      hasSpaceEnd = false,
+      collapse = false,
     } = params;
-    const templateData = [];
+    const templateData = {
+      hasSpaceStart,
+      hasSpaceEnd,
+      collapse,
+      items: [],
+    };
     let index = 0;
 
     fields.forEach((value, key) => {
-      templateData.push({
+      templateData.items.push({
         name,
         value,
         id: [name, index += 1].join('_'),
@@ -32,11 +40,29 @@ class RadioGroupBlock {
     this.root.innerHTML = this.fest(templateData);
 
     if (onClick) {
+      if (collapse) {
+        this.select = this.root.querySelector('.select__container select');
+        this.select.addEventListener('change', (evt) => {
+          onClick(evt);
+
+          const el = this.root.querySelector(`input[value=${evt.target.value}`);
+          if (el) {
+            el.checked = true;
+          }
+        });
+      }
+
       document.getElementsByName(name).forEach((el, ind) => {
         if (!ind) {
           el.checked = true;
         }
-        el.addEventListener('click', onClick);
+        el.addEventListener('click', (evt) => {
+          onClick(evt);
+
+          if (this.select) {
+            this.select.value = el.value;
+          }
+        });
       });
     }
 

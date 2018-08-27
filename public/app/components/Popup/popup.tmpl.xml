@@ -2,20 +2,15 @@
   <div class="popup">
     <div class="popup__content">
       <div class="popup__head">
-        <div class="popup__title text__l text__bold">
+        <div class="popup__title text__xl text__bold ellipsis">
           <fest:value>params.title</fest:value>
         </div>
-        <div class="popup__subtitle text__xs">
+        <div class="popup__subtitle text__s ellipsis">
           <fest:value>params.subtitle</fest:value>
         </div>
-        <div class="popup__actions"></div>
+        <div class="popup__actions popup__actions_hide scrolling-wrapper"></div>
       </div>
       <div class="popup__controller">
-        <div id="container">
-          <div class="sliderContainer">
-            <div class="display text__xxxl text__bold"></div>
-          </div>
-        </div>
       </div>
     </div>
     <fest:if test="params.confirm &amp;&amp; params.cancel">

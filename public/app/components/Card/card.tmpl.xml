@@ -5,7 +5,7 @@
               <img class="card__icon" src="{params.img}"/>
             </div>
             <div class="card__content-bottom">
-              <div class="text__bold"><fest:value>params.title</fest:value></div>
+              <div class="ellipsis text__bold"><fest:value>params.title</fest:value></div>
               <fest:if test="params.subtitle">
                 <div class="text__xs text__secondary"><fest:value>params.subtitle</fest:value></div>
               </fest:if>

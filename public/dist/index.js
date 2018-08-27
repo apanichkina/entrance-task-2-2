@@ -110,153 +110,136 @@ function getScenarios() {
 
 /***/ }),
 
-/***/ "./public/app/circle.js":
-/*!******************************!*\
-  !*** ./public/app/circle.js ***!
-  \******************************/
+/***/ "./public/app/components/CircleSlider/circleSlider.js":
+/*!************************************************************!*\
+  !*** ./public/app/components/CircleSlider/circleSlider.js ***!
+  \************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return processCircle; });
-const circleDegrees = 360;
-const halfCircleDegrees = circleDegrees / 2;
-
-function CircularSlider(options) {
-  let mouseDown = false;
-
-  const rangeValue = options.range[1] - options.range[0];
-
-  const insideradius = options.radius - options.strokewidth / 2;
-  const circumference = 2 * Math.PI * (insideradius);
-
-  const bottomMaskDegrees = circleDegrees * options.bottommaskpercent / 100;
-  console.log(bottomMaskDegrees);
-  const leftBorder = halfCircleDegrees - bottomMaskDegrees / 2;
-  const rightBorder = halfCircleDegrees + bottomMaskDegrees / 2;
-
-  const sliderContainer = options.container.getElementsByClassName('sliderContainer')[0];
-
-  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-  svg.setAttribute('class', 'progress');
-  svg.setAttribute('width', options.radius * 2);
-  svg.setAttribute('height', options.radius * 2);
-  svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-  svg.setAttribute(
-    'viewBox',
-    `0 0 ${options.radius * 2} ${options.radius * 2}`,
-  );
-
-  const progressMeter = document.createElementNS(
-    'http://www.w3.org/2000/svg',
-    'circle',
-  );
-  progressMeter.setAttribute('class', 'progress__meter');
-  progressMeter.setAttribute('cx', options.radius);
-  progressMeter.setAttribute('cy', options.radius);
-  progressMeter.setAttribute('r', insideradius);
-  progressMeter.setAttribute('stroke-width', options.strokewidth);
-
-  const bottomMask = document.createElementNS(
-    'http://www.w3.org/2000/svg',
-    'circle',
-  );
-  bottomMask.setAttribute('class', 'bottom__mask');
-  bottomMask.setAttribute('cx', options.radius);
-  bottomMask.setAttribute('cy', options.radius);
-  bottomMask.setAttribute('r', insideradius);
-  bottomMask.setAttribute('stroke-width', options.strokewidth + 0.5);
-  bottomMask.setAttribute('stroke-dasharray', `${circumference * (1 - options.bottommaskpercent / 100)} ${circumference}`);
-  bottomMask.setAttribute('stroke-dashoffset', circumference);
-  bottomMask.style.transform = `rotate(${(halfCircleDegrees + bottomMaskDegrees) / 2}deg)`;
-
-  const progressValue = document.createElementNS(
-    'http://www.w3.org/2000/svg',
-    'circle',
-  );
-  progressValue.setAttribute('class', 'progress__value');
-  progressValue.setAttribute('cx', options.radius);
-  progressValue.setAttribute('cy', options.radius);
-  progressValue.setAttribute('r', insideradius);
-  progressValue.setAttribute('stroke-width', options.strokewidth);
-  progressValue.style.stroke = options.color;
-  progressValue.style.transform = `rotate(${(halfCircleDegrees + bottomMaskDegrees) / 2}deg)`;
-
-  const dial = document.createElement('div');
-  dial.setAttribute('class', 'dial');
-
-  const display = sliderContainer.getElementsByClassName('display')[0];
-  display.style.top = `${options.strokewidth}px`;
-  display.style.left = `${options.strokewidth}px`;
-  display.style.height = `${2 * (options.radius - options.strokewidth)}px`;
-  display.style.width = `${2 * (options.radius - options.strokewidth)}px`;
-
-  const progressMask = document.createElementNS(
-    'http://www.w3.org/2000/svg',
-    'circle',
-  );
-  progressMask.setAttribute('class', 'progress__mask progress__meter');
-  progressMask.setAttribute('cx', options.radius);
-  progressMask.setAttribute('cy', options.radius);
-  progressMask.setAttribute('r', insideradius);
-  progressMask.setAttribute('stroke-width', options.strokewidth + 0.5); // to remove borders
-  progressMask.setAttribute('stroke-dasharray', '4,1');
-  progressMask.setAttribute('stroke-dashoffset', '30%');
-  const pricing = document.createElement('span');
-  pricing.setAttribute('class', 'pricing');
-  pricing.textContent = `+${options.range[0]}`;
-
-  svg.appendChild(progressMeter);
-  svg.appendChild(progressValue);
-  svg.appendChild(progressMask);
-  svg.appendChild(bottomMask);
-
-  sliderContainer.appendChild(svg);
-  // sliderContainer.appendChild(display);
-  sliderContainer.appendChild(dial);
-
-  display.appendChild(pricing);
+/* harmony import */ var _circleSlider_tmpl_xml__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./circleSlider.tmpl.xml */ "./public/app/components/CircleSlider/circleSlider.tmpl.xml");
 
 
-  this.handleInput = () => {
-    sliderContainer.addEventListener('mouseup', (e) => {
-      // e.path[1].style.zIndex = '0';
-      mouseDown = false;
+const CIRCLE_DEGREES = 360;
+const CIRCLE_DEGREES_HALF = CIRCLE_DEGREES / 2;
+const NS = 'http://www.w3.org/2000/svg';
+const createSVG = (options, type = 'circle') => {
+  if (typeof options !== 'object') {
+    return null;
+  }
+  const circle = document.createElementNS(NS, type);
+  Object.keys(options).forEach((key) => {
+    circle.setAttribute(key, String(options[key]));
+  });
+
+  return circle;
+};
+const getTranslateX = (radius, deg = 1) => `${(radius - 27) * Math.sin(deg * Math.PI / CIRCLE_DEGREES_HALF) + radius}px`;
+
+const getTranslateY = (radius, deg = 1) => `${(radius - 27) * -Math.cos(deg * Math.PI / CIRCLE_DEGREES_HALF) + radius}px`;
+
+class CircleSliderBlock {
+  constructor(root, options) {
+    this.root = root;
+    this.fest = _circleSlider_tmpl_xml__WEBPACK_IMPORTED_MODULE_0__["default"];
+
+    this.mouseDown = false;
+    this.options = options;
+    this.options.rangeValue = options.range[1] - options.range[0];
+    this.options.bottomMaskDegrees = CIRCLE_DEGREES * options.bottomMaskPercent / 100;
+    this.options.insideRadius = options.radius - options.strokeWidth / 2;
+    this.options.circumference = 2 * Math.PI * this.options.insideRadius;
+    this.options.leftBorder = CIRCLE_DEGREES_HALF - this.options.bottomMaskDegrees / 2;
+    this.options.rightBorder = CIRCLE_DEGREES_HALF + this.options.bottomMaskDegrees / 2;
+  }
+
+  create() {
+    const {
+      radius,
+      bottomMaskDegrees,
+      bottomMaskPercent,
+      strokeWidth,
+      color,
+      insideRadius,
+      circumference,
+    } = this.options;
+    this.sliderContainer = this.root.getElementsByClassName('circle-slider__container')[0];
+    this.vatueText = this.root.getElementsByClassName('display__text')[0];
+
+    const containerSize = String(radius * 2);
+    const svg = createSVG({
+      class: 'progress',
+      width: containerSize,
+      height: containerSize,
+      xmlns: NS,
+      viewBox: `0 0 ${containerSize} ${containerSize}`,
+    }, 'svg');
+
+    this.progressMeter = createSVG({
+      class: 'progress__meter',
+      cx: radius,
+      cy: radius,
+      r: insideRadius,
+      'stroke-width': strokeWidth,
     });
-    sliderContainer.addEventListener('touchend', (e) => {
-      // e.path[1].style.zIndex = '0';
-      mouseDown = false;
-    });
-    sliderContainer.addEventListener('mousedown', (e) => {
-      // e.path[1].style.zIndex = '123';
-      mouseDown = true;
-    });
-    sliderContainer.addEventListener('touchstart', (e) => {
-      // e.path[1].style.zIndex = '123';
-      mouseDown = true;
-    });
-    progressMeter.addEventListener('click', this.update);
-    progressValue.addEventListener('click', this.update);
-    progressMask.addEventListener('click', this.update);
-    document.addEventListener('mousemove', this.update);
-    document.addEventListener('touchmove', this.update, { passive: false });
-  };
 
-  this.update = (e) => {
-    if (e.type !== 'click') {
-      if (!mouseDown || options.range[1] === 0) return;
-      this.move(e);
-    } else {
-      this.move(e);
-    }
-  };
+    const strokeDasharray = `${circumference * (1 - bottomMaskPercent / 100)} ${circumference}`;
+    const rotateSVGPart = `rotate(${(CIRCLE_DEGREES_HALF + bottomMaskDegrees) / 2}deg)`;
+    this.bottomMask = createSVG({
+      class: 'bottom__mask',
+      cx: radius,
+      cy: radius,
+      r: insideRadius,
+      'stroke-width': strokeWidth + 0.5, // чтобы не было обводки
+      'stroke-dasharray': strokeDasharray,
+      'stroke-dashoffset': circumference,
+    });
+    this.bottomMask.style.transform = rotateSVGPart;
 
-  this.move = (e) => {
-    // e.path[1].style.zIndex = '123';
+    this.progressValue = createSVG({
+      class: 'progress__value',
+      cx: radius,
+      cy: radius,
+      r: insideRadius,
+      'stroke-width': strokeWidth,
+    });
+    this.progressValue.style.stroke = color;
+    this.progressValue.style.transform = rotateSVGPart;
 
-    // console.log('Event: ' + e.type);
+    this.progressMask = createSVG({
+      class: 'progress__mask progress__meter',
+      cx: radius,
+      cy: radius,
+      r: insideRadius,
+      'stroke-width': strokeWidth + 0.5, // чтобы не было обводки
+      'stroke-dasharray': '4,1',
+      'stroke-dashoffset': '30%',
+    });
+
+    this.dial = document.createElement('div');
+    this.dial.setAttribute('class', 'dial');
+
+    const displaySize = 2 * (radius - strokeWidth);
+    const display = this.sliderContainer.getElementsByClassName('display')[0];
+    display.style.top = `${strokeWidth}px`;
+    display.style.left = `${strokeWidth}px`;
+    display.style.height = `${displaySize}px`;
+    display.style.width = `${displaySize}px`;
+
+    svg.appendChild(this.progressMeter);
+    svg.appendChild(this.progressValue);
+    svg.appendChild(this.progressMask);
+    svg.appendChild(this.bottomMask);
+    this.sliderContainer.appendChild(svg);
+    this.sliderContainer.appendChild(this.dial);
+  }
+
+  move(e) {
+    const { radius, leftBorder, rightBorder } = this.options;
     let position;
+
     if (e.type === 'mouseup' || e.type === 'mousedown' || e.type === 'mousemove' || e.type === 'click') {
       position = { x: e.pageX, y: e.pageY };
     } else if (e.type === 'touchend' || e.type === 'touchstart' || e.type === 'touchmove') {
@@ -265,14 +248,14 @@ function CircularSlider(options) {
     }
 
     const coords = {
-      x: position.x - sliderContainer.getBoundingClientRect().left,
-      y: position.y - sliderContainer.getBoundingClientRect().top,
+      x: position.x - this.sliderContainer.getBoundingClientRect().left,
+      y: position.y - this.sliderContainer.getBoundingClientRect().top,
     };
-    const atan = Math.atan2(coords.x - options.radius, coords.y - options.radius);
-    const deg = Math.ceil(-atan / (Math.PI / halfCircleDegrees) + halfCircleDegrees);
+
+    const atan = Math.atan2(coords.x - radius, coords.y - radius);
+    const deg = Math.ceil(-atan / (Math.PI / CIRCLE_DEGREES_HALF) + CIRCLE_DEGREES_HALF);
 
     let degEvaluate = deg;
-    // console.log(deg);
     if (deg < leftBorder + 1 || deg > rightBorder - 1) {
       degEvaluate = deg;
     } else if ((leftBorder - deg) > (deg - rightBorder)) {
@@ -280,59 +263,112 @@ function CircularSlider(options) {
     } else {
       degEvaluate = rightBorder;
     }
-    const x = `${(options.radius - 27) * Math.sin(degEvaluate * Math.PI / halfCircleDegrees) + options.radius}px`;
-    const y = `${(options.radius - 27) * -Math.cos(degEvaluate * Math.PI / halfCircleDegrees) + options.radius}px`;
 
-    dial.style.transform = `translate(${x},${y}) rotate(${degEvaluate}deg)`;
+    this.dial.style.transform = `translate(${getTranslateX(radius, degEvaluate)},${getTranslateY(radius, degEvaluate)}) rotate(${degEvaluate}deg)`;
     this.progressDegrees(degEvaluate);
-  };
-  //
-  // this.progress = (value) => {
-  //   // console.log('Value: ' + value);
-  //   var progress = value / options.range[1];
-  //   var dashoffset = CIRCUMFERENCE * (1 - progress);
-  //   // console.log('dashoffset: ' + dashoffset);
-  //   progressValue.style.strokeDashoffset = dashoffset;
-  // };
+  }
 
-  this.progressDegrees = (deg) => {
-    // console.log('Value: ' + value);
+  update(e) {
+    if (e.type !== 'click' && (!this.mouseDown || this.options.range[1] === 0)) {
+      return;
+    }
 
-    deg = (deg + (circleDegrees - rightBorder)) % circleDegrees;
+    this.move(e);
+  }
 
-    const progress = (deg) / circleDegrees;
-    const dashoffset = circumference * (1 - progress);
-    progressValue.style.strokeDashoffset = dashoffset;
+  progressDegrees(deg) {
+    const {
+      rangeValue, circumference, range, rightBorder, leftBorder,
+    } = this.options;
+    const degEvaluate = (deg + (CIRCLE_DEGREES - rightBorder)) % CIRCLE_DEGREES;
+    const progress = degEvaluate / CIRCLE_DEGREES;
+    const points = range[0]
+      + Math.ceil((degEvaluate) * rangeValue / (CIRCLE_DEGREES - rightBorder + leftBorder));
 
-    const points = options.range[0] + Math.ceil((deg) * rangeValue / (circleDegrees - rightBorder + leftBorder));
-    pricing.textContent = `${points > 0 ? '+' : ''}${points}`;
-    console.log('points: ', points);
-  };
+    this.progressValue.style.strokeDashoffset = circumference * (1 - progress);
+    this.vatueText.textContent = `${points > 0 ? '+' : ''}${points}`;
+  }
 
-  progressValue.style.strokeDasharray = circumference;
-  this.progressDegrees(0);
+  addListeners() {
+    this.sliderContainer.addEventListener('mouseup', () => {
+      this.mouseDown = false;
+    });
+    this.sliderContainer.addEventListener('touchend', () => {
+      this.mouseDown = false;
+    });
+    this.sliderContainer.addEventListener('mousedown', () => {
+      this.mouseDown = true;
+    });
+    this.sliderContainer.addEventListener('touchstart', () => {
+      this.mouseDown = true;
+    });
+    this.progressMeter.addEventListener('click', this.update.bind(this));
+    this.progressValue.addEventListener('click', this.update.bind(this));
+    this.progressMask.addEventListener('click', this.update.bind(this));
+    document.addEventListener('mousemove', this.update.bind(this));
+    document.addEventListener('touchmove', this.update.bind(this), { passive: false });
+  }
 
-  const xx = `${(options.radius - 27) * Math.sin(Math.PI / halfCircleDegrees) + options.radius}px`;
-  const yy = `${(options.radius - 27) * -Math.cos(Math.PI / halfCircleDegrees) + options.radius}px`;
-  dial.style.transform = `translate(${xx},${yy}) rotate(1deg)`;
+  render() {
+    if (!this.root) {
+      return this; // <---- внезапный выход
+    }
+    const { circumference, radius } = this.options;
+    this.root.innerHTML = this.fest();
+    this.create();
+    this.addListeners();
+    this.progressValue.style.strokeDasharray = circumference;
+    this.progressDegrees(0);
+    this.dial.style.transform = `translate(${getTranslateX(radius)},${getTranslateY(radius)}) rotate(1deg)`;
+
+    return this;
+  }
 }
 
+/* harmony default export */ __webpack_exports__["default"] = (CircleSliderBlock);
 
-function processCircle() {
-  const container = document.getElementById('container');
-  const slider = new CircularSlider({
-    container,
-    color: '#F5A623',
-    range: [-10, 30],
-    step: 1,
-    radius: 111,
-    text: 'Entertainment',
-    strokewidth: 22,
-    bottommaskpercent: 20,
-  });
-  slider.handleInput();
-}
 
+/***/ }),
+
+/***/ "./public/app/components/CircleSlider/circleSlider.tmpl.xml":
+/*!******************************************************************!*\
+  !*** ./public/app/components/CircleSlider/circleSlider.tmpl.xml ***!
+  \******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = (function (__fest_context){"use strict";var __fest_self=this,__fest_buf="",__fest_chunks=[],__fest_chunk,__fest_attrs=[],__fest_select,__fest_if,__fest_iterator,__fest_to,__fest_fn,__fest_html="",__fest_blocks={},__fest_params,__fest_element,__fest_debug_file="",__fest_debug_line="",__fest_debug_block="",__fest_element_stack = [],__fest_short_tags = {"area": true, "base": true, "br": true, "col": true, "command": true, "embed": true, "hr": true, "img": true, "input": true, "keygen": true, "link": true, "meta": true, "param": true, "source": true, "wbr": true},__fest_jschars = /[\\'"\/\n\r\t\b\f<>]/g,__fest_jschars_test = /[\\'"\/\n\r\t\b\f<>]/,__fest_htmlchars = /[&<>"]/g,__fest_htmlchars_test = /[&<>"]/,__fest_jshash = {"\"": "\\\"", "\\": "\\\\", "/": "\\/", "\n": "\\n", "\r": "\\r", "\t": "\\t", "\b": "\\b", "\f": "\\f", "'": "\\'", "<": "\\u003C", ">": "\\u003E"},__fest_htmlhash = {"&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;"},__fest_escapeJS = function __fest_escapeJS(value) {
+		if (typeof value === 'string') {
+			if (__fest_jschars_test.test(value)) {
+				return value.replace(__fest_jschars, __fest_replaceJS);
+			}
+		}
+
+		return value == null ? '' : value;
+	},__fest_replaceJS = function __fest_replaceJS(chr) {
+		return __fest_jshash[chr];
+	},__fest_escapeHTML = function __fest_escapeHTML(value) {
+		if (typeof value === 'string') {
+			if (__fest_htmlchars_test.test(value)) {
+				return value.replace(__fest_htmlchars, __fest_replaceHTML);
+			}
+		}
+
+		return value == null ? '' : value;
+	},__fest_replaceHTML = function __fest_replaceHTML(chr) {
+		return __fest_htmlhash[chr];
+	},__fest_extend = function __fest_extend(dest, src) {
+		for (var key in src) {
+			if (src.hasOwnProperty(key)) {
+				dest[key] = src[key];
+			}
+		}
+	},__fest_param = function __fest_param(fn) {
+		fn.param = true;
+		return fn;
+	},i18n=__fest_self && typeof __fest_self.i18n === "function" ? __fest_self.i18n : function (str) {return str;},___fest_log_error;if(typeof __fest_error === "undefined"){___fest_log_error = (typeof console !== "undefined" && console.error) ? function(){return Function.prototype.apply.call(console.error, console, arguments)} : function(){};}else{___fest_log_error=__fest_error};function __fest_log_error(msg){___fest_log_error(msg+"\nin block \""+__fest_debug_block+"\" at line: "+__fest_debug_line+"\nfile: "+__fest_debug_file)}function __fest_call(fn, params,cp){if(cp)for(var i in params)if(typeof params[i]=="function"&&params[i].param)params[i]=params[i]();return fn.call(__fest_self,params)}__fest_buf+=("<div class=\"circle-slider__wrapper\"><div class=\"circle-slider__container\"><div class=\"display text__xxxl text__bold\"><span class=\"display__text\"></span></div></div></div>");__fest_to=__fest_chunks.length;if (__fest_to) {__fest_iterator = 0;for (;__fest_iterator<__fest_to;__fest_iterator++) {__fest_chunk=__fest_chunks[__fest_iterator];if (typeof __fest_chunk==="string") {__fest_html+=__fest_chunk;} else {__fest_fn=__fest_blocks[__fest_chunk.name];if (__fest_fn) __fest_html+=__fest_call(__fest_fn,__fest_chunk.params,__fest_chunk.cp);}}return __fest_html+__fest_buf;} else {return __fest_buf;}});
 
 /***/ }),
 
@@ -347,14 +383,14 @@ function processCircle() {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _devices_tmpl_xml__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./devices.tmpl.xml */ "./public/app/components/Devices/devices.tmpl.xml");
 /* harmony import */ var _Slider_slider__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../Slider/slider */ "./public/app/components/Slider/slider.js");
-/* harmony import */ var _RadioGroup_radioGroup__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../RadioGroup/radioGroup */ "./public/app/components/RadioGroup/radioGroup.js");
-/* harmony import */ var _circle__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../circle */ "./public/app/circle.js");
+/* harmony import */ var _CircleSlider_circleSlider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../CircleSlider/circleSlider */ "./public/app/components/CircleSlider/circleSlider.js");
+/* harmony import */ var _RadioGroup_radioGroup__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../RadioGroup/radioGroup */ "./public/app/components/RadioGroup/radioGroup.js");
 
 
 
 
 
-const path = '../../images_transparent/';
+const path = '../../images/';
 
 const getImg = (type, isActive) => {
   switch (type) {
@@ -395,7 +431,7 @@ const getSubtitle = (type, status) => {
 
 const mapper = el => ({
   img: getImg(el.type, el.status.isActive),
-  title: `${el.name} ${el.group.toString()}`,
+  title: el.name,
   subtitle: getSubtitle(el.type, el.status),
   group: el.group,
   type: el.type,
@@ -406,8 +442,10 @@ const createPopupActions = (popupRoot, type) => {
   actions.set('Вручную', '');
   switch (type) {
     case 'Degree':
+      actions.set('Тропики', 30);
       actions.set('Тепло', 25);
       actions.set('Холодно', 12);
+      actions.set('Мороз', 0);
       break;
     case 'Light':
       actions.set('Дневной свет', 60);
@@ -417,14 +455,17 @@ const createPopupActions = (popupRoot, type) => {
       break;
   }
   const popupActions = popupRoot.getElementsByClassName('popup__actions')[0];
-  const radioGroup = new _RadioGroup_radioGroup__WEBPACK_IMPORTED_MODULE_2__["default"](popupActions);
+  popupActions.classList.remove('popup__actions_hide');
+  const radioGroup = new _RadioGroup_radioGroup__WEBPACK_IMPORTED_MODULE_3__["default"](popupActions);
 
   radioGroup.render({
+    hasSpaceStart: true,
+    hasSpaceEnd: true,
     fields: actions,
     name: 'actions',
     onClick: (el) => {
       if (el.target.value) {
-        popupRoot.querySelectorAll('input.slider')[0].value = el.target.value;
+        popupRoot.querySelector('input.slider').value = el.target.value;
       }
     },
   });
@@ -473,17 +514,16 @@ class DevicesBlock {
 
   initPopupContent(popup) {
     const renderPopup = (data) => {
-      console.log(data)
       popup.render({
         title: data.title,
         subtitle: data.subtitle,
         onConfirm: () => console.log('confirm device'),
         onCancel: () => console.log('onCancel device'),
       });
+      const popupRoot = popup.getElement();
+      const popupController = popupRoot.getElementsByClassName('popup__controller')[0];
 
       if (['Degree', 'Light'].includes(data.type)) {
-        const popupRoot = popup.getElement();
-        const popupController = popupRoot.getElementsByClassName('popup__controller')[0];
         const slider = new _Slider_slider__WEBPACK_IMPORTED_MODULE_1__["default"](popupController);
         let sliderData = {};
         if (data.type === 'Degree') {
@@ -492,10 +532,10 @@ class DevicesBlock {
             max: 30,
             className: 'slider__degree',
           };
-        } else {
+        } else if (data.type === 'Light') {
           sliderData = {
-            iconMin: '../../images_transparent/icon_sun_min.svg',
-            iconMax: '../../images_transparent/icon_sun_max.svg',
+            iconMin: `${path}icon_sun_min.svg`,
+            iconMax: `${path}icon_sun_max.svg`,
           };
         }
         slider.render({
@@ -504,7 +544,14 @@ class DevicesBlock {
         });
         createPopupActions(popupRoot, data.type);
       } else {
-        Object(_circle__WEBPACK_IMPORTED_MODULE_3__["default"])();
+        const sliderCircle = new _CircleSlider_circleSlider__WEBPACK_IMPORTED_MODULE_2__["default"](popupController, {
+          color: 'rgb(241, 194, 124)',
+          range: [-10, 30],
+          radius: 111,
+          strokeWidth: 22,
+          bottomMaskPercent: 20,
+        });
+        sliderCircle.render();
       }
 
       popup.showPopup();
@@ -560,7 +607,7 @@ __webpack_require__.r(__webpack_exports__);
 	},__fest_param = function __fest_param(fn) {
 		fn.param = true;
 		return fn;
-	},i18n=__fest_self && typeof __fest_self.i18n === "function" ? __fest_self.i18n : function (str) {return str;},___fest_log_error;if(typeof __fest_error === "undefined"){___fest_log_error = (typeof console !== "undefined" && console.error) ? function(){return Function.prototype.apply.call(console.error, console, arguments)} : function(){};}else{___fest_log_error=__fest_error};function __fest_log_error(msg){___fest_log_error(msg+"\nin block \""+__fest_debug_block+"\" at line: "+__fest_debug_line+"\nfile: "+__fest_debug_file)}function __fest_call(fn, params,cp){if(cp)for(var i in params)if(typeof params[i]=="function"&&params[i].param)params[i]=params[i]();return fn.call(__fest_self,params)}var params=__fest_context;(function(__fest_context){__fest_blocks.card=function(params){var __fest_buf="";try{__fest_attrs[0]=__fest_escapeHTML(params.group)}catch(e){__fest_attrs[0]=""; __fest_log_error(e.message);}__fest_buf+=("<div class=\"card\" name=\"" + __fest_attrs[0] + "\"><div class=\"card__content-top\">");try{__fest_attrs[0]=__fest_escapeHTML(params.img)}catch(e){__fest_attrs[0]=""; __fest_log_error(e.message);}__fest_buf+=("<img class=\"card__icon\" src=\"" + __fest_attrs[0] + "\"/></div><div class=\"card__content-bottom\"><div class=\"text__bold\">");try{__fest_buf+=(__fest_escapeHTML(params.title))}catch(e){__fest_log_error(e.message + "7");}__fest_buf+=("</div>");try{__fest_if=params.subtitle}catch(e){__fest_if=false;__fest_log_error(e.message);}if(__fest_if){__fest_buf+=("<div class=\"text__xs text__secondary\">");try{__fest_buf+=(__fest_escapeHTML(params.subtitle))}catch(e){__fest_log_error(e.message + "9");}__fest_buf+=("</div>");}__fest_buf+=("</div></div>");return __fest_buf;};})(__fest_context);var i,card,__fest_to0,__fest_iterator0;try{__fest_iterator0=params || [];__fest_to0=__fest_iterator0.length;}catch(e){__fest_iterator0=[];__fest_to0=0;__fest_log_error(e.message);}for(i=0;i<__fest_to0;i++){card=__fest_iterator0[i];__fest_select="card";__fest_params={};try{__fest_params=card}catch(e){__fest_log_error(e.message)}__fest_chunks.push(__fest_buf,{name:__fest_select,params:__fest_params,cp:false});__fest_buf="";}__fest_buf+=("<div class=\"space__horizontal\"> </div>");__fest_to=__fest_chunks.length;if (__fest_to) {__fest_iterator = 0;for (;__fest_iterator<__fest_to;__fest_iterator++) {__fest_chunk=__fest_chunks[__fest_iterator];if (typeof __fest_chunk==="string") {__fest_html+=__fest_chunk;} else {__fest_fn=__fest_blocks[__fest_chunk.name];if (__fest_fn) __fest_html+=__fest_call(__fest_fn,__fest_chunk.params,__fest_chunk.cp);}}return __fest_html+__fest_buf;} else {return __fest_buf;}});
+	},i18n=__fest_self && typeof __fest_self.i18n === "function" ? __fest_self.i18n : function (str) {return str;},___fest_log_error;if(typeof __fest_error === "undefined"){___fest_log_error = (typeof console !== "undefined" && console.error) ? function(){return Function.prototype.apply.call(console.error, console, arguments)} : function(){};}else{___fest_log_error=__fest_error};function __fest_log_error(msg){___fest_log_error(msg+"\nin block \""+__fest_debug_block+"\" at line: "+__fest_debug_line+"\nfile: "+__fest_debug_file)}function __fest_call(fn, params,cp){if(cp)for(var i in params)if(typeof params[i]=="function"&&params[i].param)params[i]=params[i]();return fn.call(__fest_self,params)}var params=__fest_context;(function(__fest_context){__fest_blocks.card=function(params){var __fest_buf="";try{__fest_attrs[0]=__fest_escapeHTML(params.group)}catch(e){__fest_attrs[0]=""; __fest_log_error(e.message);}__fest_buf+=("<div class=\"card\" name=\"" + __fest_attrs[0] + "\"><div class=\"card__content-top\">");try{__fest_attrs[0]=__fest_escapeHTML(params.img)}catch(e){__fest_attrs[0]=""; __fest_log_error(e.message);}__fest_buf+=("<img class=\"card__icon\" src=\"" + __fest_attrs[0] + "\"/></div><div class=\"card__content-bottom\"><div class=\"ellipsis text__bold\">");try{__fest_buf+=(__fest_escapeHTML(params.title))}catch(e){__fest_log_error(e.message + "7");}__fest_buf+=("</div>");try{__fest_if=params.subtitle}catch(e){__fest_if=false;__fest_log_error(e.message);}if(__fest_if){__fest_buf+=("<div class=\"text__xs text__secondary\">");try{__fest_buf+=(__fest_escapeHTML(params.subtitle))}catch(e){__fest_log_error(e.message + "9");}__fest_buf+=("</div>");}__fest_buf+=("</div></div>");return __fest_buf;};})(__fest_context);var i,card,__fest_to0,__fest_iterator0;try{__fest_iterator0=params || [];__fest_to0=__fest_iterator0.length;}catch(e){__fest_iterator0=[];__fest_to0=0;__fest_log_error(e.message);}for(i=0;i<__fest_to0;i++){card=__fest_iterator0[i];__fest_select="card";__fest_params={};try{__fest_params=card}catch(e){__fest_log_error(e.message)}__fest_chunks.push(__fest_buf,{name:__fest_select,params:__fest_params,cp:false});__fest_buf="";}__fest_buf+=("<div class=\"space__horizontal\"> </div>");__fest_to=__fest_chunks.length;if (__fest_to) {__fest_iterator = 0;for (;__fest_iterator<__fest_to;__fest_iterator++) {__fest_chunk=__fest_chunks[__fest_iterator];if (typeof __fest_chunk==="string") {__fest_html+=__fest_chunk;} else {__fest_fn=__fest_blocks[__fest_chunk.name];if (__fest_fn) __fest_html+=__fest_call(__fest_fn,__fest_chunk.params,__fest_chunk.cp);}}return __fest_html+__fest_buf;} else {return __fest_buf;}});
 
 /***/ }),
 
@@ -674,7 +721,7 @@ __webpack_require__.r(__webpack_exports__);
 	},__fest_param = function __fest_param(fn) {
 		fn.param = true;
 		return fn;
-	},i18n=__fest_self && typeof __fest_self.i18n === "function" ? __fest_self.i18n : function (str) {return str;},___fest_log_error;if(typeof __fest_error === "undefined"){___fest_log_error = (typeof console !== "undefined" && console.error) ? function(){return Function.prototype.apply.call(console.error, console, arguments)} : function(){};}else{___fest_log_error=__fest_error};function __fest_log_error(msg){___fest_log_error(msg+"\nin block \""+__fest_debug_block+"\" at line: "+__fest_debug_line+"\nfile: "+__fest_debug_file)}function __fest_call(fn, params,cp){if(cp)for(var i in params)if(typeof params[i]=="function"&&params[i].param)params[i]=params[i]();return fn.call(__fest_self,params)}var params=__fest_context;__fest_buf+=("<div class=\"popup\"><div class=\"popup__content\"><div class=\"popup__head\"><div class=\"popup__title text__l text__bold\">");try{__fest_buf+=(__fest_escapeHTML(params.title))}catch(e){__fest_log_error(e.message + "5");}__fest_buf+=("</div><div class=\"popup__subtitle text__xs\">");try{__fest_buf+=(__fest_escapeHTML(params.subtitle))}catch(e){__fest_log_error(e.message + "8");}__fest_buf+=("</div><div class=\"popup__actions\"></div></div><div class=\"popup__controller\"><div id=\"container\"><div class=\"sliderContainer\"><div class=\"display text__xxxl text__bold\"></div></div></div></div></div>");try{__fest_if=params.confirm && params.cancel}catch(e){__fest_if=false;__fest_log_error(e.message);}if(__fest_if){__fest_buf+=("<div class=\"popup__button__container\"><button class=\"button button_confirm button_accent text__bold text__l\">");try{__fest_buf+=(__fest_escapeHTML(params.confirm))}catch(e){__fest_log_error(e.message + "23");}__fest_buf+=("</button><div class=\"button_space\"></div><button class=\"button button_cancel text__bold text__l\">");try{__fest_buf+=(__fest_escapeHTML(params.cancel))}catch(e){__fest_log_error(e.message + "27");}__fest_buf+=("</button></div>");}__fest_buf+=("</div>");__fest_to=__fest_chunks.length;if (__fest_to) {__fest_iterator = 0;for (;__fest_iterator<__fest_to;__fest_iterator++) {__fest_chunk=__fest_chunks[__fest_iterator];if (typeof __fest_chunk==="string") {__fest_html+=__fest_chunk;} else {__fest_fn=__fest_blocks[__fest_chunk.name];if (__fest_fn) __fest_html+=__fest_call(__fest_fn,__fest_chunk.params,__fest_chunk.cp);}}return __fest_html+__fest_buf;} else {return __fest_buf;}});
+	},i18n=__fest_self && typeof __fest_self.i18n === "function" ? __fest_self.i18n : function (str) {return str;},___fest_log_error;if(typeof __fest_error === "undefined"){___fest_log_error = (typeof console !== "undefined" && console.error) ? function(){return Function.prototype.apply.call(console.error, console, arguments)} : function(){};}else{___fest_log_error=__fest_error};function __fest_log_error(msg){___fest_log_error(msg+"\nin block \""+__fest_debug_block+"\" at line: "+__fest_debug_line+"\nfile: "+__fest_debug_file)}function __fest_call(fn, params,cp){if(cp)for(var i in params)if(typeof params[i]=="function"&&params[i].param)params[i]=params[i]();return fn.call(__fest_self,params)}var params=__fest_context;__fest_buf+=("<div class=\"popup\"><div class=\"popup__content\"><div class=\"popup__head\"><div class=\"popup__title text__xl text__bold ellipsis\">");try{__fest_buf+=(__fest_escapeHTML(params.title))}catch(e){__fest_log_error(e.message + "5");}__fest_buf+=("</div><div class=\"popup__subtitle text__s ellipsis\">");try{__fest_buf+=(__fest_escapeHTML(params.subtitle))}catch(e){__fest_log_error(e.message + "8");}__fest_buf+=("</div><div class=\"popup__actions popup__actions_hide scrolling-wrapper\"></div></div><div class=\"popup__controller\"></div></div>");try{__fest_if=params.confirm && params.cancel}catch(e){__fest_if=false;__fest_log_error(e.message);}if(__fest_if){__fest_buf+=("<div class=\"popup__button__container\"><button class=\"button button_confirm button_accent text__bold text__l\">");try{__fest_buf+=(__fest_escapeHTML(params.confirm))}catch(e){__fest_log_error(e.message + "18");}__fest_buf+=("</button><div class=\"button_space\"></div><button class=\"button button_cancel text__bold text__l\">");try{__fest_buf+=(__fest_escapeHTML(params.cancel))}catch(e){__fest_log_error(e.message + "22");}__fest_buf+=("</button></div>");}__fest_buf+=("</div>");__fest_to=__fest_chunks.length;if (__fest_to) {__fest_iterator = 0;for (;__fest_iterator<__fest_to;__fest_iterator++) {__fest_chunk=__fest_chunks[__fest_iterator];if (typeof __fest_chunk==="string") {__fest_html+=__fest_chunk;} else {__fest_fn=__fest_blocks[__fest_chunk.name];if (__fest_fn) __fest_html+=__fest_call(__fest_fn,__fest_chunk.params,__fest_chunk.cp);}}return __fest_html+__fest_buf;} else {return __fest_buf;}});
 
 /***/ }),
 
@@ -705,12 +752,20 @@ class RadioGroupBlock {
       fields,
       name,
       onClick,
+      hasSpaceStart = false,
+      hasSpaceEnd = false,
+      collapse = false,
     } = params;
-    const templateData = [];
+    const templateData = {
+      hasSpaceStart,
+      hasSpaceEnd,
+      collapse,
+      items: [],
+    };
     let index = 0;
 
     fields.forEach((value, key) => {
-      templateData.push({
+      templateData.items.push({
         name,
         value,
         id: [name, index += 1].join('_'),
@@ -722,11 +777,29 @@ class RadioGroupBlock {
     this.root.innerHTML = this.fest(templateData);
 
     if (onClick) {
+      if (collapse) {
+        this.select = this.root.querySelector('.select__container select');
+        this.select.addEventListener('change', (evt) => {
+          onClick(evt);
+
+          const el = this.root.querySelector(`input[value=${evt.target.value}`);
+          if (el) {
+            el.checked = true;
+          }
+        });
+      }
+
       document.getElementsByName(name).forEach((el, ind) => {
         if (!ind) {
           el.checked = true;
         }
-        el.addEventListener('click', onClick);
+        el.addEventListener('click', (evt) => {
+          onClick(evt);
+
+          if (this.select) {
+            this.select.value = el.value;
+          }
+        });
       });
     }
 
@@ -777,7 +850,7 @@ __webpack_require__.r(__webpack_exports__);
 	},__fest_param = function __fest_param(fn) {
 		fn.param = true;
 		return fn;
-	},i18n=__fest_self && typeof __fest_self.i18n === "function" ? __fest_self.i18n : function (str) {return str;},___fest_log_error;if(typeof __fest_error === "undefined"){___fest_log_error = (typeof console !== "undefined" && console.error) ? function(){return Function.prototype.apply.call(console.error, console, arguments)} : function(){};}else{___fest_log_error=__fest_error};function __fest_log_error(msg){___fest_log_error(msg+"\nin block \""+__fest_debug_block+"\" at line: "+__fest_debug_line+"\nfile: "+__fest_debug_file)}function __fest_call(fn, params,cp){if(cp)for(var i in params)if(typeof params[i]=="function"&&params[i].param)params[i]=params[i]();return fn.call(__fest_self,params)}var params=__fest_context;(function(__fest_context){var params=__fest_context;__fest_blocks.radio=function(params){var __fest_buf="";try{__fest_attrs[0]=__fest_escapeHTML(params.id)}catch(e){__fest_attrs[0]=""; __fest_log_error(e.message);}try{__fest_attrs[1]=__fest_escapeHTML(params.name)}catch(e){__fest_attrs[1]=""; __fest_log_error(e.message);}try{__fest_attrs[2]=__fest_escapeHTML(params.value)}catch(e){__fest_attrs[2]=""; __fest_log_error(e.message);}try{__fest_attrs[3]=__fest_escapeHTML(params.onClick)}catch(e){__fest_attrs[3]=""; __fest_log_error(e.message);}__fest_buf+=("<input type=\"radio\" id=\"" + __fest_attrs[0] + "\" name=\"" + __fest_attrs[1] + "\" value=\"" + __fest_attrs[2] + "\" onClick=\"" + __fest_attrs[3] + "\"/>");try{__fest_attrs[0]=__fest_escapeHTML(params.id)}catch(e){__fest_attrs[0]=""; __fest_log_error(e.message);}__fest_buf+=("<label for=\"" + __fest_attrs[0] + "\" class=\"text__s text__bold\">");try{__fest_buf+=(__fest_escapeHTML(params.label))}catch(e){__fest_log_error(e.message + "3");}__fest_buf+=("</label>");return __fest_buf;};})(__fest_context);__fest_blocks.radioGroup=function(params){var __fest_buf="";var i,btn,__fest_to0,__fest_iterator0;try{__fest_iterator0=params || [];__fest_to0=__fest_iterator0.length;}catch(e){__fest_iterator0=[];__fest_to0=0;__fest_log_error(e.message);}for(i=0;i<__fest_to0;i++){btn=__fest_iterator0[i];__fest_select="radio";__fest_params={};try{__fest_params=btn}catch(e){__fest_log_error(e.message)}__fest_fn=__fest_blocks[__fest_select];if (__fest_fn)__fest_buf+=__fest_call(__fest_fn,__fest_params,false);}return __fest_buf;};__fest_select="radioGroup";__fest_params={};try{__fest_params=params}catch(e){__fest_log_error(e.message)}__fest_chunks.push(__fest_buf,{name:__fest_select,params:__fest_params,cp:false});__fest_buf="";__fest_to=__fest_chunks.length;if (__fest_to) {__fest_iterator = 0;for (;__fest_iterator<__fest_to;__fest_iterator++) {__fest_chunk=__fest_chunks[__fest_iterator];if (typeof __fest_chunk==="string") {__fest_html+=__fest_chunk;} else {__fest_fn=__fest_blocks[__fest_chunk.name];if (__fest_fn) __fest_html+=__fest_call(__fest_fn,__fest_chunk.params,__fest_chunk.cp);}}return __fest_html+__fest_buf;} else {return __fest_buf;}});
+	},i18n=__fest_self && typeof __fest_self.i18n === "function" ? __fest_self.i18n : function (str) {return str;},___fest_log_error;if(typeof __fest_error === "undefined"){___fest_log_error = (typeof console !== "undefined" && console.error) ? function(){return Function.prototype.apply.call(console.error, console, arguments)} : function(){};}else{___fest_log_error=__fest_error};function __fest_log_error(msg){___fest_log_error(msg+"\nin block \""+__fest_debug_block+"\" at line: "+__fest_debug_line+"\nfile: "+__fest_debug_file)}function __fest_call(fn, params,cp){if(cp)for(var i in params)if(typeof params[i]=="function"&&params[i].param)params[i]=params[i]();return fn.call(__fest_self,params)}var params=__fest_context;(function(__fest_context){var params=__fest_context;__fest_blocks.radio=function(params){var __fest_buf="";try{__fest_attrs[0]=__fest_escapeHTML(params.id)}catch(e){__fest_attrs[0]=""; __fest_log_error(e.message);}try{__fest_attrs[1]=__fest_escapeHTML(params.name)}catch(e){__fest_attrs[1]=""; __fest_log_error(e.message);}try{__fest_attrs[2]=__fest_escapeHTML(params.value)}catch(e){__fest_attrs[2]=""; __fest_log_error(e.message);}try{__fest_attrs[3]=__fest_escapeHTML(params.onClick)}catch(e){__fest_attrs[3]=""; __fest_log_error(e.message);}__fest_buf+=("<input type=\"radio\" id=\"" + __fest_attrs[0] + "\" name=\"" + __fest_attrs[1] + "\" value=\"" + __fest_attrs[2] + "\" onClick=\"" + __fest_attrs[3] + "\"/>");try{__fest_attrs[0]=__fest_escapeHTML(params.id)}catch(e){__fest_attrs[0]=""; __fest_log_error(e.message);}__fest_buf+=("<label for=\"" + __fest_attrs[0] + "\" class=\"text__s text__bold\">");try{__fest_buf+=(__fest_escapeHTML(params.label))}catch(e){__fest_log_error(e.message + "3");}__fest_buf+=("</label>");return __fest_buf;};})(__fest_context);(function(__fest_context){var params=__fest_context;__fest_blocks.select=function(params){var __fest_buf="";__fest_buf+=("<div class=\"select__container\"><select class=\"text__s text__bold\">");var i,opt,__fest_to0,__fest_iterator0;try{__fest_iterator0=params.items || [];__fest_to0=__fest_iterator0.length;}catch(e){__fest_iterator0=[];__fest_to0=0;__fest_log_error(e.message);}for(i=0;i<__fest_to0;i++){opt=__fest_iterator0[i];try{__fest_attrs[0]=__fest_escapeHTML(opt.value)}catch(e){__fest_attrs[0]=""; __fest_log_error(e.message);}__fest_buf+=("<option value=\"" + __fest_attrs[0] + "\">");try{__fest_buf+=(__fest_escapeHTML(opt.label))}catch(e){__fest_log_error(e.message + "6");}__fest_buf+=("</option>");}__fest_buf+=("</select></div>");return __fest_buf;};})(__fest_context);__fest_blocks.radioGroup=function(params){var __fest_buf="";try{__fest_if=params.hasSpaceStart}catch(e){__fest_if=false;__fest_log_error(e.message);}if(__fest_if){__fest_buf+=("<div class=\"space__horizontal\"> </div>");}var i,btn,__fest_to0,__fest_iterator0;try{__fest_iterator0=params.items || [];__fest_to0=__fest_iterator0.length;}catch(e){__fest_iterator0=[];__fest_to0=0;__fest_log_error(e.message);}for(i=0;i<__fest_to0;i++){btn=__fest_iterator0[i];__fest_select="radio";__fest_params={};try{__fest_params=btn}catch(e){__fest_log_error(e.message)}__fest_fn=__fest_blocks[__fest_select];if (__fest_fn)__fest_buf+=__fest_call(__fest_fn,__fest_params,false);}try{__fest_if=params.hasSpaceEnd}catch(e){__fest_if=false;__fest_log_error(e.message);}if(__fest_if){__fest_buf+=("<div class=\"space__horizontal\"> </div>");}try{__fest_if=params.collapse}catch(e){__fest_if=false;__fest_log_error(e.message);}if(__fest_if){__fest_select="select";__fest_params={};try{__fest_params=params}catch(e){__fest_log_error(e.message)}__fest_fn=__fest_blocks[__fest_select];if (__fest_fn)__fest_buf+=__fest_call(__fest_fn,__fest_params,false);}return __fest_buf;};__fest_select="radioGroup";__fest_params={};try{__fest_params=params}catch(e){__fest_log_error(e.message)}__fest_chunks.push(__fest_buf,{name:__fest_select,params:__fest_params,cp:false});__fest_buf="";__fest_to=__fest_chunks.length;if (__fest_to) {__fest_iterator = 0;for (;__fest_iterator<__fest_to;__fest_iterator++) {__fest_chunk=__fest_chunks[__fest_iterator];if (typeof __fest_chunk==="string") {__fest_html+=__fest_chunk;} else {__fest_fn=__fest_blocks[__fest_chunk.name];if (__fest_fn) __fest_html+=__fest_call(__fest_fn,__fest_chunk.params,__fest_chunk.cp);}}return __fest_html+__fest_buf;} else {return __fest_buf;}});
 
 /***/ }),
 
@@ -793,7 +866,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _scenarios_tmpl_xml__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./scenarios.tmpl.xml */ "./public/app/components/Scenarios/scenarios.tmpl.xml");
 
 
-const path = '../../images_transparent/';
+const path = '../../images/';
 
 const getImg = (type, isActive) => {
   switch (type) {
@@ -915,7 +988,7 @@ __webpack_require__.r(__webpack_exports__);
 	},__fest_param = function __fest_param(fn) {
 		fn.param = true;
 		return fn;
-	},i18n=__fest_self && typeof __fest_self.i18n === "function" ? __fest_self.i18n : function (str) {return str;},___fest_log_error;if(typeof __fest_error === "undefined"){___fest_log_error = (typeof console !== "undefined" && console.error) ? function(){return Function.prototype.apply.call(console.error, console, arguments)} : function(){};}else{___fest_log_error=__fest_error};function __fest_log_error(msg){___fest_log_error(msg+"\nin block \""+__fest_debug_block+"\" at line: "+__fest_debug_line+"\nfile: "+__fest_debug_file)}function __fest_call(fn, params,cp){if(cp)for(var i in params)if(typeof params[i]=="function"&&params[i].param)params[i]=params[i]();return fn.call(__fest_self,params)}var params=__fest_context;(function(__fest_context){__fest_blocks.card=function(params){var __fest_buf="";try{__fest_attrs[0]=__fest_escapeHTML(params.group)}catch(e){__fest_attrs[0]=""; __fest_log_error(e.message);}__fest_buf+=("<div class=\"card\" name=\"" + __fest_attrs[0] + "\"><div class=\"card__content-top\">");try{__fest_attrs[0]=__fest_escapeHTML(params.img)}catch(e){__fest_attrs[0]=""; __fest_log_error(e.message);}__fest_buf+=("<img class=\"card__icon\" src=\"" + __fest_attrs[0] + "\"/></div><div class=\"card__content-bottom\"><div class=\"text__bold\">");try{__fest_buf+=(__fest_escapeHTML(params.title))}catch(e){__fest_log_error(e.message + "7");}__fest_buf+=("</div>");try{__fest_if=params.subtitle}catch(e){__fest_if=false;__fest_log_error(e.message);}if(__fest_if){__fest_buf+=("<div class=\"text__xs text__secondary\">");try{__fest_buf+=(__fest_escapeHTML(params.subtitle))}catch(e){__fest_log_error(e.message + "9");}__fest_buf+=("</div>");}__fest_buf+=("</div></div>");return __fest_buf;};})(__fest_context);var i,page,__fest_to0,__fest_iterator0;try{__fest_iterator0=params || [];__fest_to0=__fest_iterator0.length;}catch(e){__fest_iterator0=[];__fest_to0=0;__fest_log_error(e.message);}for(i=0;i<__fest_to0;i++){page=__fest_iterator0[i];__fest_buf+=("<div class=\"group\">");var j,card,__fest_to1,__fest_iterator1;try{__fest_iterator1=page || [];__fest_to1=__fest_iterator1.length;}catch(e){__fest_iterator1=[];__fest_to1=0;__fest_log_error(e.message);}for(j=0;j<__fest_to1;j++){card=__fest_iterator1[j];__fest_select="card";__fest_params={};try{__fest_params=card}catch(e){__fest_log_error(e.message)}__fest_chunks.push(__fest_buf,{name:__fest_select,params:__fest_params,cp:false});__fest_buf="";}__fest_buf+=("</div>");}__fest_buf+=("<div class=\"space__horizontal\"> </div>");__fest_to=__fest_chunks.length;if (__fest_to) {__fest_iterator = 0;for (;__fest_iterator<__fest_to;__fest_iterator++) {__fest_chunk=__fest_chunks[__fest_iterator];if (typeof __fest_chunk==="string") {__fest_html+=__fest_chunk;} else {__fest_fn=__fest_blocks[__fest_chunk.name];if (__fest_fn) __fest_html+=__fest_call(__fest_fn,__fest_chunk.params,__fest_chunk.cp);}}return __fest_html+__fest_buf;} else {return __fest_buf;}});
+	},i18n=__fest_self && typeof __fest_self.i18n === "function" ? __fest_self.i18n : function (str) {return str;},___fest_log_error;if(typeof __fest_error === "undefined"){___fest_log_error = (typeof console !== "undefined" && console.error) ? function(){return Function.prototype.apply.call(console.error, console, arguments)} : function(){};}else{___fest_log_error=__fest_error};function __fest_log_error(msg){___fest_log_error(msg+"\nin block \""+__fest_debug_block+"\" at line: "+__fest_debug_line+"\nfile: "+__fest_debug_file)}function __fest_call(fn, params,cp){if(cp)for(var i in params)if(typeof params[i]=="function"&&params[i].param)params[i]=params[i]();return fn.call(__fest_self,params)}var params=__fest_context;(function(__fest_context){__fest_blocks.card=function(params){var __fest_buf="";try{__fest_attrs[0]=__fest_escapeHTML(params.group)}catch(e){__fest_attrs[0]=""; __fest_log_error(e.message);}__fest_buf+=("<div class=\"card\" name=\"" + __fest_attrs[0] + "\"><div class=\"card__content-top\">");try{__fest_attrs[0]=__fest_escapeHTML(params.img)}catch(e){__fest_attrs[0]=""; __fest_log_error(e.message);}__fest_buf+=("<img class=\"card__icon\" src=\"" + __fest_attrs[0] + "\"/></div><div class=\"card__content-bottom\"><div class=\"ellipsis text__bold\">");try{__fest_buf+=(__fest_escapeHTML(params.title))}catch(e){__fest_log_error(e.message + "7");}__fest_buf+=("</div>");try{__fest_if=params.subtitle}catch(e){__fest_if=false;__fest_log_error(e.message);}if(__fest_if){__fest_buf+=("<div class=\"text__xs text__secondary\">");try{__fest_buf+=(__fest_escapeHTML(params.subtitle))}catch(e){__fest_log_error(e.message + "9");}__fest_buf+=("</div>");}__fest_buf+=("</div></div>");return __fest_buf;};})(__fest_context);var i,page,__fest_to0,__fest_iterator0;try{__fest_iterator0=params || [];__fest_to0=__fest_iterator0.length;}catch(e){__fest_iterator0=[];__fest_to0=0;__fest_log_error(e.message);}for(i=0;i<__fest_to0;i++){page=__fest_iterator0[i];__fest_buf+=("<div class=\"group\">");var j,card,__fest_to1,__fest_iterator1;try{__fest_iterator1=page || [];__fest_to1=__fest_iterator1.length;}catch(e){__fest_iterator1=[];__fest_to1=0;__fest_log_error(e.message);}for(j=0;j<__fest_to1;j++){card=__fest_iterator1[j];__fest_select="card";__fest_params={};try{__fest_params=card}catch(e){__fest_log_error(e.message)}__fest_chunks.push(__fest_buf,{name:__fest_select,params:__fest_params,cp:false});__fest_buf="";}__fest_buf+=("</div>");}__fest_buf+=("<div class=\"space__horizontal\"> </div>");__fest_to=__fest_chunks.length;if (__fest_to) {__fest_iterator = 0;for (;__fest_iterator<__fest_to;__fest_iterator++) {__fest_chunk=__fest_chunks[__fest_iterator];if (typeof __fest_chunk==="string") {__fest_html+=__fest_chunk;} else {__fest_fn=__fest_blocks[__fest_chunk.name];if (__fest_fn) __fest_html+=__fest_call(__fest_fn,__fest_chunk.params,__fest_chunk.cp);}}return __fest_html+__fest_buf;} else {return __fest_buf;}});
 
 /***/ }),
 
@@ -1169,6 +1242,7 @@ function processScrollableSection(
     };
 
     radioGroup.render({
+      collapse: true,
       fields: filter,
       name: sectionId,
       emptyValueName: 'Все',

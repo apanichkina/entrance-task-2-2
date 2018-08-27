@@ -1,9 +1,9 @@
 import template from './devices.tmpl.xml';
 import Slider from '../Slider/slider';
+import CircleSlider from '../CircleSlider/circleSlider';
 import RadioGroup from '../RadioGroup/radioGroup';
-import processCircle from '../../circle';
 
-const path = '../../images_transparent/';
+const path = '../../images/';
 
 const getImg = (type, isActive) => {
   switch (type) {
@@ -44,7 +44,7 @@ const getSubtitle = (type, status) => {
 
 const mapper = el => ({
   img: getImg(el.type, el.status.isActive),
-  title: `${el.name} ${el.group.toString()}`,
+  title: el.name,
   subtitle: getSubtitle(el.type, el.status),
   group: el.group,
   type: el.type,
@@ -55,8 +55,10 @@ const createPopupActions = (popupRoot, type) => {
   actions.set('Вручную', '');
   switch (type) {
     case 'Degree':
+      actions.set('Тропики', 30);
       actions.set('Тепло', 25);
       actions.set('Холодно', 12);
+      actions.set('Мороз', 0);
       break;
     case 'Light':
       actions.set('Дневной свет', 60);
@@ -66,14 +68,17 @@ const createPopupActions = (popupRoot, type) => {
       break;
   }
   const popupActions = popupRoot.getElementsByClassName('popup__actions')[0];
+  popupActions.classList.remove('popup__actions_hide');
   const radioGroup = new RadioGroup(popupActions);
 
   radioGroup.render({
+    hasSpaceStart: true,
+    hasSpaceEnd: true,
     fields: actions,
     name: 'actions',
     onClick: (el) => {
       if (el.target.value) {
-        popupRoot.querySelectorAll('input.slider')[0].value = el.target.value;
+        popupRoot.querySelector('input.slider').value = el.target.value;
       }
     },
   });
@@ -122,17 +127,16 @@ class DevicesBlock {
 
   initPopupContent(popup) {
     const renderPopup = (data) => {
-      console.log(data)
       popup.render({
         title: data.title,
         subtitle: data.subtitle,
         onConfirm: () => console.log('confirm device'),
         onCancel: () => console.log('onCancel device'),
       });
+      const popupRoot = popup.getElement();
+      const popupController = popupRoot.getElementsByClassName('popup__controller')[0];
 
       if (['Degree', 'Light'].includes(data.type)) {
-        const popupRoot = popup.getElement();
-        const popupController = popupRoot.getElementsByClassName('popup__controller')[0];
         const slider = new Slider(popupController);
         let sliderData = {};
         if (data.type === 'Degree') {
@@ -141,10 +145,10 @@ class DevicesBlock {
             max: 30,
             className: 'slider__degree',
           };
-        } else {
+        } else if (data.type === 'Light') {
           sliderData = {
-            iconMin: '../../images_transparent/icon_sun_min.svg',
-            iconMax: '../../images_transparent/icon_sun_max.svg',
+            iconMin: `${path}icon_sun_min.svg`,
+            iconMax: `${path}icon_sun_max.svg`,
           };
         }
         slider.render({
@@ -153,7 +157,14 @@ class DevicesBlock {
         });
         createPopupActions(popupRoot, data.type);
       } else {
-        processCircle();
+        const sliderCircle = new CircleSlider(popupController, {
+          color: 'rgb(241, 194, 124)',
+          range: [-10, 30],
+          radius: 111,
+          strokeWidth: 22,
+          bottomMaskPercent: 20,
+        });
+        sliderCircle.render();
       }
 
       popup.showPopup();
