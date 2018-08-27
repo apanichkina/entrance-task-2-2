@@ -36,6 +36,14 @@ module.exports = {
         ],
       },
       {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        query: {
+          presets: ['stage-2'],
+        },
+      },
+      {
         test: /\.css$/,
         use: ['css-hot-loader'].concat(cssExtractTextPlugin.extract({
           fallback: 'style-loader',

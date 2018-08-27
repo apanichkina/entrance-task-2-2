@@ -1,22 +1,22 @@
 .popup {
-  display: flex;
-  flex-direction: column;
   width: 200px;
   height: auto;
   z-index: 1001;
-  top: 600px;
   position: fixed;
-  margin: auto;
-  justify-content: center;
+  top: 600px;
   left: 400px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   visibility: hidden;
   background-color: transparent;
 }
 
 .popup_show > .popup {
   visibility: visible;
-  animation: forward 0.3s;
-  animation-fill-mode: forwards;
+  -webkit-animation: forward 0.3s forwards; /* Safari 4+ */
+  animation: forward 0.3s forwards; /* IE 10+, Fx 29+ */
 }
 
 .popup__content {
@@ -92,6 +92,8 @@
     transform: translate3d(-50%, -50%, 0);
   }
 }
+
+
 
 .popup__head .scrolling-wrapper {
   margin-right: -25px;
