@@ -52,10 +52,14 @@ class RadioGroupBlock {
         });
       }
 
-      document.getElementsByName(name).forEach((el, ind) => {
-        if (!ind) {
+      const inputs = document.getElementsByName(name);
+      for (let i = 0; i < inputs.length; i++) {
+        const el = inputs[i];
+
+        if (!i) {
           el.checked = true;
         }
+
         el.addEventListener('click', (evt) => {
           onClick(evt);
 
@@ -63,7 +67,7 @@ class RadioGroupBlock {
             this.select.value = el.value;
           }
         });
-      });
+      }
     }
 
     return this;

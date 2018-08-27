@@ -29,9 +29,10 @@ class SliderBlock {
 
     // add handlers
     if (onInput) {
-      document.getElementsByName(name).forEach((el) => {
-        el.addEventListener('input', onInput);
-      });
+      const slider = document.getElementsByName(name);
+      for (let i = 0; i < slider.length; i++) {
+        slider[i].addEventListener('input', onInput);
+      }
     }
 
     return this;
