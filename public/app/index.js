@@ -1,6 +1,6 @@
 import { getScenarios, getDevices } from './api';
 import { processScrollableSection } from './helpers';
-import DevicesBlock from './components/Devices/devices'; // TODO
+import DevicesBlock from './components/Devices/devices';
 import Popup from './components/Popup/popup';
 import ScenariosBlock from './components/Scenarios/scenarios';
 import '../css/index.css';

@@ -30,6 +30,7 @@ body {
   font: 14px/16px YandexSans,Arial,Helvetica,sans-serif;
   color: var(--color-black);
   user-select: none;
+  -ms-overflow-style: none;
 }
 
 .root {
