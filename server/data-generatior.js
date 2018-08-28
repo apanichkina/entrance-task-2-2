@@ -26,7 +26,7 @@ const DEVICE_NAME_BY_TYPE = {
 
 const DEVICE_LOCATION = [
   'Кухня',
-  // 'Сад',
+  'Сад',
   // 'Комната',
   // 'Санузел',
 ];
@@ -106,13 +106,13 @@ function generateDeviceDetails() {
 
   switch (type) {
     case 'Degree':
-      group.push('Термометры');
+      group.push('Погода');
       break;
     case 'Light':
-      group.push('Лампочки');
+      group.push('Свет');
       break;
     case 'Climate':
-      group.push('Полы');
+      group.push('Пол');
       break;
     default:
       break;
@@ -126,6 +126,7 @@ function generateDeviceDetails() {
     name: [getRandomElement(DEVICE_BRAND), name, getRandomElement(DEVICE_SERIES)].join(' '),
     type,
     group,
+    isMain: Math.random() > 0.8,
   };
 }
 

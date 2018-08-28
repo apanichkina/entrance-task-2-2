@@ -88,41 +88,27 @@ export function handelScroll(section, delta) {
 }
 
 export function processScrollableSection(
-  data, constructorFn, scrollRange, sectionId, hasFilter = false,
+  data, constructorFn, scrollRange, sectionId, hasFilter = false, vertical = false,
 ) {
   const section = document.getElementById(sectionId);
   const checkArrows = () => processArrows(section);
-  const container = section.getElementsByClassName('scrolling-wrapper')[0];
+  const containerClass = vertical ? 'scrolling-wrapper__vertical' : 'scrolling-wrapper';
+  const container = section.getElementsByClassName(containerClass)[0];
   if (!container || !data) {
     return;
   }
 
   const block = constructorFn(container);
-  block.render({
-    ...data,
-  });
-
-  handelScroll(section, scrollRange);
-  checkArrows();
-
-  container.addEventListener('scroll', () => {
-    setTimeout(() => {
-      checkArrows();
-    }, 250);
-  });
-
-  window.addEventListener('resize', () => {
-    setTimeout(() => {
-      checkArrows();
-    }, 250);
-  });
 
   if (hasFilter) {
     // получаем все фильтры (можно заменить на отдельный конец api)
     const filter = new Map();
-    filter.set('Все', '');
+    const emptyValue = 'Все';
+
+    filter.set(emptyValue, emptyValue);
     data.items.forEach((el) => {
       el.group.forEach((gr) => {
+        el.group.push(emptyValue);
         filter.set(gr, gr);
       });
     });
@@ -140,8 +126,28 @@ export function processScrollableSection(
       collapse: true,
       fields: filter,
       name: sectionId,
-      emptyValueName: 'Все',
       onClick: onClickCallback,
+    });
+  }
+
+  block.render({
+    ...data,
+  });
+
+  if (!vertical) {
+    handelScroll(section, scrollRange);
+    checkArrows();
+
+    container.addEventListener('scroll', () => {
+      setTimeout(() => {
+        checkArrows();
+      }, 250);
+    });
+
+    window.addEventListener('resize', () => {
+      setTimeout(() => {
+        checkArrows();
+      }, 250);
     });
   }
 }

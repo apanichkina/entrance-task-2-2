@@ -26,16 +26,30 @@ document.addEventListener('DOMContentLoaded', () => {
   document.body.insertBefore(popupContainer, root);
 
   getDevices().then((data) => {
-    const sectionData = {
+    const allDevicesData = {
       popup,
       items: data,
     };
 
     processScrollableSection(
-      sectionData,
+      allDevicesData,
       params => (new DevicesBlock(params)),
       600,
       'devices',
+      true,
+    );
+
+    const mainDevicesData = {
+      popup,
+      items: data.filter(el => el.isMain),
+    };
+
+    processScrollableSection(
+      mainDevicesData,
+      params => (new DevicesBlock(params)),
+      600,
+      'mainDevices',
+      false,
       true,
     );
   });

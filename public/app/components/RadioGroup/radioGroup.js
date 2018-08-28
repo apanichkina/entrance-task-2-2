@@ -38,14 +38,12 @@ class RadioGroupBlock {
     });
 
     this.root.innerHTML = this.fest(templateData);
-
+    this.select = collapse ? this.root.querySelector('.select__container select') : null;
     if (onClick) {
-      if (collapse) {
-        this.select = this.root.querySelector('.select__container select');
+      if (this.select) {
         this.select.addEventListener('change', (evt) => {
           onClick(evt);
-
-          const el = this.root.querySelector(`input[value=${evt.target.value}`);
+          const el = this.root.querySelector(`input[value=${evt.target.value}]`);
           if (el) {
             el.checked = true;
           }
