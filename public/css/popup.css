@@ -15,8 +15,8 @@
 
 .popup_show > .popup {
   visibility: visible;
-  -webkit-animation: forward 0.3s forwards; /* Safari 4+ */
-  animation: forward 0.3s forwards; /* IE 10+, Fx 29+ */
+  transform: translate3d(-50%, -50%, 0);
+  animation: forward 0.3s forwards;
 }
 
 .popup__content {
@@ -89,7 +89,6 @@
     height: auto;
     top: 50%;
     left: 50%;
-    transform: translate3d(-50%, -50%, 0);
   }
 }
 

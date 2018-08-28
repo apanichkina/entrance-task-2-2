@@ -4,7 +4,7 @@
 }
 
 .select__container select {
-  webkit-appearance: none;
+  -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
   outline: 0;
@@ -12,12 +12,19 @@
   padding: 7px 30px 8px 15px;
   margin: 0;
   border: none;
+  text-indent: 0.01px;/* this is important! */
+  text-overflow: ''; /* this is important! */
   border-radius: var(--block-border-radius);
   background: url('/images/arrow-down.svg') 88% / 12% no-repeat var(--color-accent);
 }
 
 .radio-toolbar .select__container {
   display: none;
+}
+
+select:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 #000;
 }
 
 @media (--less-than-720-viewport) {
